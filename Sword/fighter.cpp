@@ -6,15 +6,15 @@
 
 #include "particle_effect.hpp"
 
-#include "../openclrenderer/light.hpp"
+#include "../OpenCLRenderer/light.hpp"
 
-#include "../openclrenderer/obj_load.hpp"
+#include "../OpenCLRenderer/obj_load.hpp"
 
 #include "text.hpp"
 
 #include "../sword_server/teaminfo_shared.hpp"
 
-#include "../openclrenderer/logging.hpp"
+#include "../OpenCLRenderer/logging.hpp"
 
 #include "map_tools.hpp"
 #include "network_fighter_model.hpp"

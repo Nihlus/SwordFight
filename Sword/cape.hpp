@@ -1,9 +1,9 @@
 #ifndef CAPE_HPP_INCLUDED
 #define CAPE_HPP_INCLUDED
 
-#include <Boost/compute.hpp>
+#include <boost/compute.hpp>
 #include <vec/vec.hpp>
-#include <sfml/system.hpp>
+#include <SFML/System.hpp>
 
 struct object_context_data;
 struct object_context;

@@ -2,18 +2,18 @@
 
 #include <iostream>
 
-#include "../openclrenderer/objects_container.hpp"
+#include "../OpenCLRenderer/objects_container.hpp"
 
 #include <float.h>
 
 #include "fighter.hpp"
 
 #include <CL/cl.h> ///sigh
-#include "../openclrenderer/engine.hpp"
+#include "../OpenCLRenderer/engine.hpp"
 
 #include "text.hpp"
 #include "sound.hpp"
-#include "../openclrenderer/network.hpp"
+#include "../OpenCLRenderer/network.hpp"
 
 bool physobj::within(vec3f pos, vec3f fudge)
 {

@@ -1,45 +1,51 @@
-#include <winsock2.h>
-#include "../openclrenderer/engine.hpp"
-#include "../openclrenderer/ocl.h"
 
-#include "../openclrenderer/text_handler.hpp"
+#ifdef WINDOWS
+#include <winsock2.h>
+#endif
+
+#include "../OpenCLRenderer/engine.hpp"
+#include "../OpenCLRenderer/ocl.h"
+
+#include "../OpenCLRenderer/text_handler.hpp"
 #include <sstream>
 #include <string>
-#include "../openclrenderer/vec.hpp"
+#include "../OpenCLRenderer/vec.hpp"
 
 #include "fighter.hpp"
 #include "text.hpp"
 #include "physics.hpp"
 
-#include "../openclrenderer/network.hpp"
+#include "../OpenCLRenderer/network.hpp"
 
 #include "sound.hpp"
 
 #include "object_cube.hpp"
 #include "particle_effect.hpp"
 
-#include "../openclrenderer/settings_loader.hpp"
-#include "../openclrenderer/controls.hpp"
+#include "../OpenCLRenderer/settings_loader.hpp"
+#include "../OpenCLRenderer/controls.hpp"
 #include "map_tools.hpp"
 
 #include "server_networking.hpp"
-#include "../openclrenderer/game/space_manager.hpp" ///yup
-#include "../openclrenderer/game/galaxy/galaxy.hpp"
+#include "../OpenCLRenderer/Game/space_manager.hpp" ///yup
+#include "../OpenCLRenderer/Game/Galaxy/galaxy.hpp"
 
 #include "game_state_manager.hpp"
 
-#include "../openclrenderer/obj_load.hpp"
+#include "../OpenCLRenderer/obj_load.hpp"
 
 #include "menu.hpp"
 
-#include "version.h"
+//#include "version.h"
 
 #include "util.hpp"
-#include "../openclrenderer/logging.hpp"
+#include "../OpenCLRenderer/logging.hpp"
 
 #include <fstream>
 
+#ifdef MYO
 #include <my_myo/my_myo.hpp>
+#endif
 
 #include "../imgui/imgui.h"
 #include "../imgui/imgui-SFML.h"
@@ -363,7 +369,7 @@ int main(int argc, char *argv[])
 
     engine window;
     window.append_opencl_extra_command_line("-D SHADOWBIAS=150");
-    window.load(s.width,s.height, 1000, title, "../openclrenderer/cl2.cl", true);
+    window.load(s.width,s.height, 1000, title, "../OpenCLRenderer/cl2.cl", true);
     ImGui::SFML::Init(window.window);
     window.manual_input = true;
 
@@ -641,7 +647,7 @@ int main(int argc, char *argv[])
             cl::cqueue2.finish();
             cl::cqueue_ooo.finish();
 
-            window.load(r_x, r_y, 1000, title, "../openclrenderer/cl2.cl", true, fullscreen);
+            window.load(r_x, r_y, 1000, title, "../OpenCLRenderer/cl2.cl", true, fullscreen);
 
             ImGui::SFML::Init(window.window);
 

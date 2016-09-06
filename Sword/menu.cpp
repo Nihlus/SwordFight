@@ -1,6 +1,6 @@
 #include "menu.hpp"
 
-#include "../openclrenderer/engine.hpp"
+#include "../OpenCLRenderer/engine.hpp"
 
 #include "text.hpp"
 

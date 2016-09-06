@@ -1,7 +1,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "../openclrenderer/smoke.hpp"
-#include "../sword/vec.hpp"
+#include "../OpenCLRenderer/smoke.hpp"
+#include "../Sword/vec.hpp"
 
 using namespace std;
 

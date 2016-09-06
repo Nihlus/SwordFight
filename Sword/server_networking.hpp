@@ -7,7 +7,7 @@
 #include "../sword_server/reliability_shared.hpp"
 #include <net/shared.hpp>
 #include <map>
-#include "../openclrenderer/logging.hpp"
+#include "../OpenCLRenderer/logging.hpp"
 
 struct fighter;
 struct object_context;

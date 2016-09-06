@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "../openclrenderer/logging.hpp"
+#include "../OpenCLRenderer/logging.hpp"
 #include "fighter.hpp"
 
 struct objects_container;

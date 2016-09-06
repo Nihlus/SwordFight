@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <stdint.h>
-#include <SFML/system.hpp>
+#include <SFML/System.hpp>
 
 struct byte_fetch;
 struct byte_vector;

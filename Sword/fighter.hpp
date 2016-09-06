@@ -1,7 +1,7 @@
 #ifndef FIGHTER_HPP_INCLUDED
 #define FIGHTER_HPP_INCLUDED
 
-#include "../openclrenderer/objects_container.hpp"
+#include "../OpenCLRenderer/objects_container.hpp"
 
 #include <vec/vec.hpp>
 
