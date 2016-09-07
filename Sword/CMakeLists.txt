@@ -4,7 +4,16 @@ project(Sword)
 set(Sword_VERSION_MAJOR 1)
 set(Sword_VERSION_MINOR 0)
 
-add_compile_options(-std=gnu++14)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+
+add_compile_options(-std=gnu++14 -Wno-c++11-narrowing)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cmake_modules" ${CMAKE_MODULE_PATH})
+
+find_package(OpenGL)
+find_package(OpenCL)
+find_package(GLEW)
+find_package(Threads)
+find_package(SFML 2 REQUIRED system window graphics network audio)
 
 set(SWORD_SOURCES
 		${PROJECT_SOURCE_DIR}/cape.cpp
@@ -49,6 +58,7 @@ set(RENDERER_SOURCES
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/interact_manager.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/light.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/logging.cpp
+		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/network.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_info_struct.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_load.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/object.cpp
@@ -76,6 +86,7 @@ set(RENDERER_HEADERS
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/interact_manager.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/light.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/logging.hpp
+		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/network.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_g_descriptor.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_info_struct.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_load.hpp
@@ -109,7 +120,17 @@ include_directories(
 		${PROJECT_SOURCE_DIR}/
 		${PROJECT_SOURCE_DIR}/../../libraries/
 		${PROJECT_SOURCE_DIR}/../../libraries/imgui
+		${PROJECT_SOURCE_DIR}/../../libraries/imgui-sfml
 		${PROJECT_SOURCE_DIR}/../../libraries/compute/include
 )
 
-add_executable(Sword ${SWORD_SOURCES} ${SWORD_HEADERS} ${SERVER_SOURCES} ${SERVER_HEADERS} ${RENDERE_SOURCES} ${RENDERER_HEADERS})
+add_executable(${PROJECT_NAME} ${SWORD_SOURCES} ${SWORD_HEADERS} ${SERVER_SOURCES} ${SERVER_HEADERS} ${RENDERE_SOURCES} ${RENDERER_HEADERS})
+
+target_link_libraries(
+		${PROJECT_NAME}
+		${OPENGL_gl_LIBRARY}
+		${OpenCL_LIBRARIES}
+		${CMAKE_THREAD_LIBS_INIT}
+		${SFML_LIBRARIES})
+
+file(COPY ${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cl2.cl DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

@@ -1,10 +1,10 @@
-#include "cape.hpp"
+#include "../OpenCLRenderer/texture.hpp"
 #include "../OpenCLRenderer/vertex.hpp"
 #include "../OpenCLRenderer/objects_container.hpp"
-#include "../OpenCLRenderer/texture.hpp"
 #include "../OpenCLRenderer/object.hpp"
 #include "../OpenCLRenderer/clstate.h"
 #include "../OpenCLRenderer/engine.hpp"
+#include "cape.hpp"
 //#include "../OpenCLRenderer/obj_mem_manager.hpp"
 #include <vec/vec.hpp>
 #include "physics.hpp"
@@ -253,8 +253,8 @@ compute::buffer cape::fighter_to_fixed_vec(vec3f p1, vec3f p2, vec3f p3, vec3f r
     lpos = lpos + perp3 * ldepth;
     rpos = rpos + perp3 * ldepth;
 
-    lpos.v[1] += bodypart::scale / 4;
-    rpos.v[1] += bodypart::scale / 4;
+    lpos.v[1] += bodyparts::scale / 4;
+    rpos.v[1] += bodyparts::scale / 4;
 
     ///dir could also just be (p3 - p1).rot ???
     vec3f dir = rpos - lpos;
@@ -275,7 +275,7 @@ compute::buffer cape::fighter_to_fixed_vec(vec3f p1, vec3f p2, vec3f p3, vec3f r
 
     //cl_float* mem_map = (cl_float*) clEnqueueMapBuffer(cl::cqueue.get(), buf.get(), CL_TRUE, CL_MAP_WRITE_INVALIDATE_REGION, 0, sizeof(cl_float)*width*3, 0, NULL, NULL, NULL);
 
-    float sag = bodypart::scale/32.f;
+    float sag = bodyparts::scale/32.f;
 
     //sag = 0;
 
@@ -315,10 +315,10 @@ compute::buffer body_to_gpu(fighter* parent)
         pos.push_back({p.v[0], p.v[1], p.v[2]});
     }
 
-    vec3f half = (parent->parts[bodypart::LUPPERLEG].global_pos + parent->parts[bodypart::RUPPERLEG].global_pos)/2.f;
-    vec3f half2 = (parent->parts[bodypart::LLOWERLEG].global_pos + parent->parts[bodypart::RLOWERLEG].global_pos)/2.f;
+    vec3f half = (parent->parts[bodyparts::bodypart::LUPPERLEG].global_pos + parent->parts[bodyparts::bodypart::RUPPERLEG].global_pos)/2.f;
+    vec3f half2 = (parent->parts[bodyparts::bodypart::LLOWERLEG].global_pos + parent->parts[bodyparts::bodypart::RLOWERLEG].global_pos)/2.f;
 
-    vec3f half3 = (half + parent->parts[bodypart::BODY].global_pos)/2.f;
+    vec3f half3 = (half + parent->parts[bodyparts::bodypart::BODY].global_pos)/2.f;
 
     pos.push_back({half.v[0], half.v[1], half.v[2]});
     pos.push_back({half2.v[0], half2.v[1], half2.v[2]});
@@ -417,7 +417,7 @@ void cape::tick(fighter* parent)
     //cl_float wind_side = w.gust;
 
     auto buf = body_to_gpu(parent);
-    cl_int num = bodypart::COUNT + 3;
+    cl_int num = bodyparts::bodypart::COUNT + 3;
 
     //cl_float frametime = parent->frametime;
 
@@ -443,9 +443,9 @@ void cape::tick(fighter* parent)
     compute::buffer b1 = which == 0 ? in : out;
     compute::buffer b2 = which == 0 ? out : in;
 
-    vec3f lp = parent->parts[bodypart::LUPPERARM].global_pos;
-    vec3f mp = parent->parts[bodypart::BODY].global_pos;
-    vec3f rp = parent->parts[bodypart::RUPPERARM].global_pos;
+    vec3f lp = parent->parts[bodyparts::bodypart::LUPPERARM].global_pos;
+    vec3f mp = parent->parts[bodyparts::bodypart::BODY].global_pos;
+    vec3f rp = parent->parts[bodyparts::bodypart::RUPPERARM].global_pos;
 
     lp.v[1] += death_height_offset;
     mp.v[1] += death_height_offset;

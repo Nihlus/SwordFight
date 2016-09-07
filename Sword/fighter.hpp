@@ -1,14 +1,11 @@
 #ifndef FIGHTER_HPP_INCLUDED
 #define FIGHTER_HPP_INCLUDED
 
+#include <SFML/Graphics.hpp>
 #include "../OpenCLRenderer/objects_container.hpp"
 
 #include <vec/vec.hpp>
-
-#include <SFML/Graphics.hpp>
-
 #include "bbox.hpp"
-
 #include "cape.hpp"
 //#include "map_tools.hpp"
 
@@ -42,7 +39,7 @@ namespace mov
 
 typedef mov::movement_type movement_t;
 
-namespace bodypart
+namespace bodyparts
 {
     enum bodypart : unsigned int
     {
@@ -229,7 +226,7 @@ namespace bodypart
     constexpr const float specular = 0.75f;
 }
 
-typedef bodypart::bodypart bodypart_t;
+typedef bodyparts::bodypart bodypart_t;
 
 namespace fighter_stats
 {
@@ -443,98 +440,98 @@ struct attack
 ///make sure we use our real sprint change in velocity, so you cant just hold shift and attack all the time
 static std::vector<movement> sprint_dummy =
 {
-    {0, {0,0,0}, 500, 0, bodypart::LHAND, mov::NO_MOVEMENT}
+    {0, {0,0,0}, 500, 0, bodyparts::bodypart::LHAND, mov::NO_MOVEMENT}
 };
 
 static std::vector<movement> overhead =
 {
-    {0, {-150, -0, -40}, 400, 0, bodypart::LHAND, mov::WINDUP}, ///windup
-    //{0, {-120, -0, -40}, 400, 0, bodypart::LHAND, mov::WINDUP}, ///windup
-    {0, {100, -150, -140}, 500, 1, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE | mov::OVERHEAD_HACK)}, ///attack
-    {0, {0, -150, -140}, 200, 1, bodypart::LHAND,  (movement_t)(mov::NONE)}
+    {0, {-150, -0, -40}, 400, 0, bodyparts::bodypart::LHAND, mov::WINDUP}, ///windup
+    //{0, {-120, -0, -40}, 400, 0, bodyparts::bodypart::LHAND, mov::WINDUP}, ///windup
+    {0, {100, -150, -140}, 500, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE | mov::OVERHEAD_HACK)}, ///attack
+    {0, {0, -150, -140}, 200, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)}
 };
 
 static std::vector<movement> overhead_alt =
 {
-    {0, {-150, -0, -40}, 400, 0, bodypart::LHAND, mov::WINDUP}, ///windup
+    {0, {-150, -0, -40}, 400, 0, bodyparts::bodypart::LHAND, mov::WINDUP}, ///windup
     //{0, {-120, -0, -40}, 400, 0, bodypart::LHAND, mov::WINDUP}, ///windup
-    {0, {100, -150, -140}, 500, 1, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE | mov::OVERHEAD_HACK)}, ///attack
-    {0, {0, -150, -140}, 200, 1, bodypart::LHAND,  (movement_t)(mov::NONE)}
+    {0, {100, -150, -140}, 500, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE | mov::OVERHEAD_HACK)}, ///attack
+    {0, {0, -150, -140}, 200, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)}
 };
 
 static std::vector<movement> recoil =
 {
-    {0, {-120, -150, -60}, 300, 4, bodypart::LHAND,  (movement_t)(mov::NONE | mov::LOCKS_ARMS | mov::IS_RECOIL)}, ///recoiling doesnt block or damage
-    {0, {-0, -150, -140}, 500, 4, bodypart::LHAND,  (movement_t)(mov::NONE | mov::IS_RECOIL)} ///attack
-    //{0, {-120, -10, -60}, 800, 0, bodypart::LHAND,  (movement_t)(mov::NONE | mov::LOCKS_ARMS | mov::IS_RECOIL)} ///recoiling doesnt block or damage
+    {0, {-120, -150, -60}, 300, 4, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE | mov::LOCKS_ARMS | mov::IS_RECOIL)}, ///recoiling doesnt block or damage
+    {0, {-0, -150, -140}, 500, 4, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE | mov::IS_RECOIL)} ///attack
+    //{0, {-120, -10, -60}, 800, 0, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE | mov::LOCKS_ARMS | mov::IS_RECOIL)} ///recoiling doesnt block or damage
 };
 
 static std::vector<movement> slash =
 {
-    {0, {-180, -60, -10}, 350, 0, bodypart::LHAND, mov::WINDUP}, ///windup
-    {0, {120, -60, -140}, 450, 1, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)}, ///attack
-    {0, {0, -150, -140}, 200, 5, bodypart::LHAND,  (movement_t)(mov::NONE)}
+    {0, {-180, -60, -10}, 350, 0, bodyparts::bodypart::LHAND, mov::WINDUP}, ///windup
+    {0, {120, -60, -140}, 450, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)}, ///attack
+    {0, {0, -150, -140}, 200, 5, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)}
 
-    //{0, {120, -60, -140}, 450, 1, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)} ///attack
+    //{0, {120, -60, -140}, 450, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)} ///attack
 };
 
 static std::vector<movement> slash_alt =
 {
-    {0, {120, -60, -140}, 350, 0, bodypart::LHAND, mov::WINDUP}, ///windup
-    {0, {-180, -60, -10}, 450, 1, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)}, ///attack
-    {0, {0, -150, -140}, 200, 1, bodypart::LHAND,  (movement_t)(mov::NONE)}
+    {0, {120, -60, -140}, 350, 0, bodyparts::bodypart::LHAND, mov::WINDUP}, ///windup
+    {0, {-180, -60, -10}, 450, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)}, ///attack
+    {0, {0, -150, -140}, 200, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)}
 
-    //{0, {120, -60, -140}, 450, 1, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)} ///attack
+    //{0, {120, -60, -140}, 450, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::PASS_THROUGH_SCREEN_CENTRE)} ///attack
 };
 
 /*static std::vector<movement> slash =
 {
-    {0, {-150, -80, -40}, 200, 0, bodypart::LHAND, mov::WINDUP}, ///windup
-    {0, {100, -80, -140}, 450, 1, bodypart::LHAND, mov::DAMAGING} ///attack
+    {0, {-150, -80, -40}, 200, 0, bodyparts::bodypart::LHAND, mov::WINDUP}, ///windup
+    {0, {100, -80, -140}, 450, 1, bodyparts::bodypart::LHAND, mov::DAMAGING} ///attack
 };*/
 
 static std::vector<movement> rest =
 {
-    {0, {0, -200, -100}, 500, 1, bodypart::LHAND, mov::NONE}
+    {0, {0, -200, -100}, 500, 1, bodyparts::bodypart::LHAND, mov::NONE}
 };
 
 
 static std::vector<movement> stab =
 {
-    //{0, {-80, -120, -10}, 450, 0, bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)}, ///windup
-    //{0, {-80, -120, +100}, 450, 0, bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)}, /
-    //{0, {-80, -0, -10}, 450, 0, bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)},
-    {0, {-80, -120, -10}, 450, 4, bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)}, ///windup
-    {0, {-40, -180, -180}, 400, 4, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::FINISH_AT_SCREEN_CENTRE)}, ///attack
-    //{0, {100, -150, -140}, 200, 3, bodypart::LHAND,  (movement_t)(mov::NONE)} ///attack
-    {0, {0, -150, -140}, 200, 3, bodypart::LHAND,  (movement_t)(mov::NONE)},
+    //{0, {-80, -120, -10}, 450, 0, bodyparts::bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)}, ///windup
+    //{0, {-80, -120, +100}, 450, 0, bodyparts::bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)}, /
+    //{0, {-80, -0, -10}, 450, 0, bodyparts::bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)},
+    {0, {-80, -120, -10}, 450, 4, bodyparts::bodypart::LHAND, (movement_t)(mov::WINDUP | mov::NONE)}, ///windup
+    {0, {-40, -180, -180}, 400, 4, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::FINISH_AT_SCREEN_CENTRE)}, ///attack
+    //{0, {100, -150, -140}, 200, 3, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)} ///attack
+    {0, {0, -150, -140}, 200, 3, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)},
 
 
-    //{0, {-40, -60, -180}, 350, 1, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::FINISH_AT_SCREEN_CENTRE)}, ///attack
-    //{0, {-40, -60, -180}, 350, 0, bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::FINISH_AT_SCREEN_CENTRE)} ///attack
-    //{0, {-80, -200, -100}, 200, 1, bodypart::LHAND, mov::NOSLOW_START}
+    //{0, {-40, -60, -180}, 350, 1, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::FINISH_AT_SCREEN_CENTRE)}, ///attack
+    //{0, {-40, -60, -180}, 350, 0, bodyparts::bodypart::LHAND,  (movement_t)(mov::DAMAGING | mov::LOCKS_ARMS | mov::FINISH_AT_SCREEN_CENTRE)} ///attack
+    //{0, {-80, -200, -100}, 200, 1, bodyparts::bodypart::LHAND, mov::NOSLOW_START}
 };
 
 
 /*static std::vector<movement> block_old =
 {
-    {0, {-50, -80, -20}, 300, 0, bodypart::LHAND, (movement_t)(mov::BLOCKING | mov::FINISH_INDEPENDENT | mov::FINISH_AT_90)},
-    {0, {100, -150, -140}, 400, 0, bodypart::LHAND, mov::START_INDEPENDENT}
+    {0, {-50, -80, -20}, 300, 0, bodyparts::bodypart::LHAND, (movement_t)(mov::BLOCKING | mov::FINISH_INDEPENDENT | mov::FINISH_AT_90)},
+    {0, {100, -150, -140}, 400, 0, bodyparts::bodypart::LHAND, mov::START_INDEPENDENT}
 };*/
 
 static std::vector<movement> block =
 {
-    {0, {-110, -40, -40}, 300, 0, bodypart::LHAND, (movement_t)(mov::BLOCKING | mov::FINISH_INDEPENDENT | mov::FINISH_AT_90)},
-    {0, {100, -150, -140}, 400, 0, bodypart::LHAND, mov::START_INDEPENDENT}
+    {0, {-110, -40, -40}, 300, 0, bodyparts::bodypart::LHAND, (movement_t)(mov::BLOCKING | mov::FINISH_INDEPENDENT | mov::FINISH_AT_90)},
+    {0, {100, -150, -140}, 400, 0, bodyparts::bodypart::LHAND, mov::START_INDEPENDENT}
 };
 
 ///try a third kind of movement, that starts very slow then goes normal speed
 static std::vector<movement> feint =
 {
-    //{0, {-150, -80, -40}, 350, 0, bodypart::LHAND, mov::NONE}
-    //{0, {0, -200, -100}, 300, 1, bodypart::LHAND, mov::NONE}
-    //{0, {100, -150, -140}, 300, 3, bodypart::LHAND,  mov::NONE}
-    {0, {0, -150, -140}, 300, 3, bodypart::LHAND,  (movement_t)(mov::NONE)} ///attack
+    //{0, {-150, -80, -40}, 350, 0, bodyparts::bodypart::LHAND, mov::NONE}
+    //{0, {0, -200, -100}, 300, 1, bodyparts::bodypart::LHAND, mov::NONE}
+    //{0, {100, -150, -140}, 300, 3, bodyparts::bodypart::LHAND,  mov::NONE}
+    {0, {0, -150, -140}, 300, 3, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)} ///attack
 };
 
 ///?
@@ -660,18 +657,18 @@ struct local_components
     int32_t send_clang_audio = 0;
 };
 
-struct link
+struct joint_link
 {
-    part* p1;
-    part* p2;
+	part* p1;
+	part* p2;
 
-    objects_container* obj;
+	objects_container* obj;
 
-    vec3f offset;
+	vec3f offset;
 
-    float squish_frac;
+	float squish_frac;
 
-    float length = 0.f;
+	float length = 0.f;
 };
 
 struct cosmetics
@@ -735,7 +732,7 @@ struct fighter
 
     std::vector<light*> my_lights;
 
-    std::vector<link> joint_links;
+    std::vector<joint_link> joint_links;
 
     float frametime;
     float my_time;
@@ -754,7 +751,7 @@ struct fighter
     //part parts[bodypart::COUNT];
     ///bodypart::COUNT numbers of these
     std::vector<part> parts;
-    vec3f old_pos[bodypart::COUNT];
+    vec3f old_pos[bodyparts::bodypart::COUNT];
 
     fighter(object_context& cpu_context, object_context_data& gpu_context);
     void load();

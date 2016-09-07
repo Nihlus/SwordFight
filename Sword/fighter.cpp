@@ -15,6 +15,7 @@
 #include "../sword_server/teaminfo_shared.hpp"
 
 #include "../OpenCLRenderer/logging.hpp"
+#include "../OpenCLRenderer/texture.hpp"
 
 #include "map_tools.hpp"
 #include "network_fighter_model.hpp"
@@ -64,9 +65,9 @@ vec3f jump_descriptor::get_relative_jump_displacement_tick(float dt, fighter* fi
     return offset;
 }
 
-const vec3f* bodypart::init_default()
+const vec3f* bodyparts::init_default()
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     static vec3f pos[COUNT];
 
@@ -111,7 +112,7 @@ void part::set_type(bodypart_t t)
 {
     type = t;
 
-    set_pos(bodypart::default_position[t]);
+    set_pos(bodyparts::default_position[t]);
 
     set_hp(1.f);
 }
@@ -160,7 +161,7 @@ void part::set_active(bool active)
 
 void part::scale()
 {
-    float amount = bodypart::scale/3.f;
+    float amount = bodyparts::scale/3.f;
 
     model->set_dynamic_scale(amount);
 }
@@ -250,7 +251,7 @@ void part::load_team_model()
         tex->set_create_colour({col.v[0], col.v[1], col.v[2]}, res, res);
     }
 
-    model->set_specular(bodypart::specular);
+    model->set_specular(bodyparts::specular);
 
     scale();
 }
@@ -495,7 +496,7 @@ void sword::load_team_model()
     ///make this a default action
     scale();
 
-    model->set_specular(bodypart::specular);
+    model->set_specular(bodyparts::specular);
 }
 
 sword::sword(object_context& cpu)
@@ -557,7 +558,7 @@ void sword::set_rot(vec3f _rot)
     rot = _rot;
 }
 
-link make_link(part* p1, part* p2, int team, float squish = 0.0f, float thickness = 18.f, vec3f offset = {0,0,0})
+struct joint_link make_link(part* p1, part* p2, int team, float squish = 0.0f, float thickness = 18.f, vec3f offset = {0,0,0})
 {
     vec3f dir = (p2->pos - p1->pos);
 
@@ -576,7 +577,7 @@ link make_link(part* p1, part* p2, int team, float squish = 0.0f, float thicknes
     o->set_load_func(std::bind(load_object_cube_tex, std::placeholders::_1, start, finish, thickness, *ntex));
     o->cache = false;
 
-    link l;
+    joint_link l;
 
     l.obj = o;
 
@@ -598,7 +599,7 @@ fighter::fighter(object_context& _cpu_context, object_context_data& _gpu_context
     cpu_context = &_cpu_context;
     gpu_context = &_gpu_context;
 
-    for(int i=0; i<bodypart::COUNT; i++)
+    for(int i=0; i<bodyparts::COUNT; i++)
     {
         parts.push_back(part(_cpu_context));
     }
@@ -665,9 +666,9 @@ void fighter::load()
     stance = 0;
 
     ///im not sure why this is a duplicate of default_position
-    rest_positions = bodypart::init_default();
+    rest_positions = bodyparts::init_default();
 
-    for(size_t i=0; i<bodypart::COUNT; i++)
+    for(size_t i=0; i<bodyparts::COUNT; i++)
     {
         parts[i].set_type((bodypart_t)i);
         old_pos[i] = parts[i].pos;
@@ -676,10 +677,10 @@ void fighter::load()
     ///this is a dirty, dirty hack to smooth the knee positions first time around
     for(int i=0; i<100; i++)
     {
-        IK_foot(0, parts[bodypart::LFOOT].pos);
-        IK_foot(1, parts[bodypart::RFOOT].pos);
+        IK_foot(0, parts[bodyparts::bodypart::LFOOT].pos);
+        IK_foot(1, parts[bodyparts::bodypart::RFOOT].pos);
 
-        for(int i=0; i<bodypart::COUNT; i++)
+        for(int i=0; i<bodyparts::bodypart::COUNT; i++)
         {
             old_pos[i] = parts[i].pos;
         }
@@ -894,7 +895,7 @@ void fighter::set_look(vec3f _look)
     vec3f clamps = {M_PI/8.f, M_PI/12.f, M_PI/8.f};
     new_look = clamp(new_look, -clamps, clamps);
 
-    vec3f origin = parts[bodypart::BODY].pos;
+    vec3f origin = parts[bodyparts::bodypart::BODY].pos;
 
     vec3f c2b = current_look - origin;
     vec3f n2b = new_look - origin;
@@ -910,7 +911,7 @@ void fighter::set_look(vec3f _look)
 
     new_look = clamp(new_look, -clamps, clamps); /// just in case for some reason the old current_look was oob
 
-    const float displacement = (rest_positions[bodypart::LHAND] - rest_positions[bodypart::LUPPERARM]).length();
+    const float displacement = (rest_positions[bodyparts::bodypart::LHAND] - rest_positions[bodyparts::bodypart::LUPPERARM]).length();
 
     float height = displacement * sin(new_look.v[0]);
     float width = displacement * sin(new_look.v[1]);
@@ -1031,7 +1032,7 @@ void inverse_kinematic_foot(vec3f pos, vec3f p1, vec3f p2, vec3f p3, vec3f off1,
 
 void fighter::IK_hand(int which_hand, vec3f pos, float upper_rotation, bool arms_are_locked, bool force_positioning)
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     auto upper = which_hand ? RUPPERARM : LUPPERARM;
     auto lower = which_hand ? RLOWERARM : LLOWERARM;
@@ -1072,7 +1073,7 @@ void fighter::IK_hand(int which_hand, vec3f pos, float upper_rotation, bool arms
 ///so we dont mess up length calculations
 void fighter::IK_foot(int which_foot, vec3f pos, vec3f off1, vec3f off2, vec3f off3)
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     auto upper = which_foot ? RUPPERLEG : LUPPERLEG;
     auto lower = which_foot ? RLOWERLEG : LLOWERLEG;
@@ -1145,7 +1146,7 @@ void fighter::tick(bool is_player)
 
     my_time = cur_time;
 
-    using namespace bodypart;
+    using namespace bodyparts;
 
     std::vector<bodypart_t> busy_list;
 
@@ -1445,7 +1446,7 @@ void fighter::tick(bool is_player)
     parts[HEAD].set_pos((head_rest - body_rest) + parts[BODY].pos);
 
 
-    float cdist = 2 * bodypart::scale / 2.f;
+    float cdist = 2 * bodyparts::scale / 2.f;
 
     for(auto& i : {HEAD, BODY, LUPPERARM, RUPPERARM, LLOWERARM, RLOWERARM, LHAND, RHAND})
     {
@@ -1746,8 +1747,8 @@ void fighter::walk_dir(vec2f dir, bool sprint)
     static float lmod = 1.f;
     static float frac = 0.f;
 
-    auto foot = bodypart::LFOOT;
-    auto ofoot = bodypart::RFOOT;
+    auto foot = bodyparts::bodypart::LFOOT;
+    auto ofoot = bodyparts::bodypart::RFOOT;
 
     vec3f lrp = {parts[foot].pos.v[0], 0.f, parts[foot].pos.v[2]};
     vec3f rrp = {parts[ofoot].pos.v[0], 0.f, parts[ofoot].pos.v[2]};
@@ -1763,7 +1764,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
     if(!idle)
     {
         IK_foot(0, parts[foot].pos - lmod * current_dir);
-        IK_foot(1, parts[bodypart::RFOOT].pos + lmod * current_dir);
+        IK_foot(1, parts[bodyparts::bodypart::RFOOT].pos + lmod * current_dir);
     }
 
     lfrac /= 0.8f;
@@ -1794,7 +1795,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
     ///works for idling, average in last direction of moving to stick the feet on ground
     ///also keeps feet in place while regular walking
     {
-        foot = bodypart::LFOOT;
+        foot = bodyparts::bodypart::LFOOT;
 
         vec3f rest = rest_positions[foot];
         vec3f shortest_dir = point2line_shortest(rest_positions[foot], current_dir, parts[foot].pos);
@@ -1805,7 +1806,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
     }
 
     {
-        foot = bodypart::RFOOT;
+        foot = bodyparts::bodypart::RFOOT;
 
         vec3f rest = rest_positions[foot];
         vec3f shortest_dir = point2line_shortest(rest_positions[foot], current_dir, parts[foot].pos);
@@ -1817,7 +1818,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
 
     ///reflects foot when it reaches the destination
     {
-        foot = bodypart::LFOOT;
+        foot =bodyparts:: bodypart::LFOOT;
 
         vec3f without_up = {parts[foot].pos.v[0], 0.f, parts[foot].pos.v[2]};
         vec3f without_up_rest = {rest_positions[foot].v[0], 0.f, rest_positions[foot].v[2]};
@@ -1839,7 +1840,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
 
 
     {
-        foot = bodypart::RFOOT;
+        foot = bodyparts::bodypart::RFOOT;
 
         vec3f without_up = {parts[foot].pos.v[0], 0.f, parts[foot].pos.v[2]};
         vec3f without_up_rest = {rest_positions[foot].v[0], 0.f, rest_positions[foot].v[2]};
@@ -1862,7 +1863,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
 
 void fighter::crouch_tick(bool do_crouch)
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     ///milliseconds
     float fdiff = frametime / 1000.f;
@@ -1892,7 +1893,7 @@ void fighter::do_foot_sounds(bool is_player)
 
     bool is_relative = is_player;
 
-    using namespace bodypart;
+    using namespace bodyparts;
 
     part& lfoot = parts[LFOOT];
     part& rfoot = parts[RFOOT];
@@ -2028,7 +2029,7 @@ void fighter::try_jump()
 
 void fighter::update_sword_rot()
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     if(stance == 0)
     {
@@ -2109,10 +2110,10 @@ void fighter::set_rot_diff(vec3f diff)
 
 vec2f fighter::get_approx_dim()
 {
-    vec2f real_size = {bodypart::scale, bodypart::scale};
+    vec2f real_size = {bodyparts::scale, bodyparts::scale};
 
     real_size = real_size * 2.f;
-    real_size = real_size + bodypart::scale * 2.f/5.f;
+    real_size = real_size + bodyparts::scale * 2.f/5.f;
 
     return real_size;
 }
@@ -2180,7 +2181,7 @@ void smooth(float& in, float old, float dt)
 ///smoothing still isn't good
 void fighter::update_render_positions()
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     if(!just_spawned)
     {
@@ -2347,18 +2348,18 @@ void fighter::update_headbob_if_sprinting(bool sprinting)
 
 void fighter::position_cosmetics()
 {
-    vec3f hpos = parts[bodypart::HEAD].global_pos;
+    vec3f hpos = parts[bodyparts::bodypart::HEAD].global_pos;
 
     ///partscale = scale/3.f
 
-    vec3f offset = hpos + (vec3f){0, bodypart::scale/3.f, 0};
+    vec3f offset = hpos + (vec3f){0, bodyparts::scale/3.f, 0};
 
     cosmetic.tophat->set_pos({offset.v[0], offset.v[1], offset.v[2]});
 }
 
 void fighter::network_update_render_positions()
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     for(auto& i : joint_links)
     {
@@ -2395,7 +2396,7 @@ void fighter::network_update_render_positions()
 ///need to fixme
 void fighter::update_lights()
 {
-    vec3f lpos = (parts[bodypart::LFOOT].global_pos + parts[bodypart::RFOOT].global_pos) / 2.f;
+    vec3f lpos = (parts[bodyparts::bodypart::LFOOT].global_pos + parts[bodyparts::bodypart::RFOOT].global_pos) / 2.f;
 
     ///+40 is wrong but... eh
     my_lights[0]->set_pos({lpos.v[0], lpos.v[1] + 40.f, lpos.v[2]});
@@ -2404,9 +2405,9 @@ void fighter::update_lights()
     ///maybe we should transform externally as well
     ///this one incorrect for on walls due to pos
     ///take head->body vector and use that
-    vec3f body = parts[bodypart::BODY].global_pos;
-    vec3f head = parts[bodypart::HEAD].global_pos;
-    vec3f rarm = parts[bodypart::RUPPERARM].global_pos;
+    vec3f body = parts[bodyparts::bodypart::BODY].global_pos;
+    vec3f head = parts[bodyparts::bodypart::HEAD].global_pos;
+    vec3f rarm = parts[bodyparts::bodypart::RUPPERARM].global_pos;
 
     vec3f body_to_head = head - body;
     vec3f body_to_right = rarm - body;
@@ -2497,7 +2498,7 @@ void fighter::respawn_if_appropriate()
 ///net-fighters ONLY
 void fighter::overwrite_parts_from_model()
 {
-    for(int i=0; i<bodypart::COUNT; i++)
+    for(int i=0; i<bodyparts::bodypart::COUNT; i++)
     {
         old_pos[i] = parts[i].global_pos;
     }
@@ -2582,7 +2583,7 @@ void fighter::check_clientside_parry(fighter* non_networked_fighter)
     {
         //printf("we're damaging network\n");
 
-        vec3f move_dir = parts[bodypart::LHAND].global_pos - old_pos[bodypart::LHAND];
+        vec3f move_dir = parts[bodyparts::bodypart::LHAND].global_pos - old_pos[bodyparts::bodypart::LHAND];
 
         ///this is currently checking clientside parries against all players, whereas we only want to check
         ///this networked fighter against the local player
@@ -2710,7 +2711,7 @@ network_fighter fighter::construct_network_fighter()
 {
     network_fighter ret;
 
-    for(int i=0; i<bodypart::COUNT; i++)
+    for(int i=0; i<bodyparts::bodypart::COUNT; i++)
     {
         network_part_info& current = ret.network_parts[i];
 
@@ -2750,7 +2751,7 @@ network_fighter fighter::construct_network_fighter()
 void fighter::construct_from_network_fighter(network_fighter& net_fight)
 {
     ///we'll need to construct quite a few of these into net. for the time being, including name
-    for(int i=0; i<bodypart::COUNT; i++)
+    for(int i=0; i<bodyparts::bodypart::COUNT; i++)
     {
         network_part_info& current = net_fight.network_parts[i];
 
@@ -2802,7 +2803,7 @@ void fighter::set_team(int _team)
     float squish = 0.1f;
 
     ///now we know the team, we can add the joint parts
-    using namespace bodypart;
+    using namespace bodyparts;
 
     ///I think the problem with this is that make_link makes between the real positions
     ///not the default positions
@@ -2831,7 +2832,7 @@ void fighter::set_team(int _team)
 
     for(auto& i : joint_links)
     {
-        i.obj->set_specular(bodypart::specular);
+        i.obj->set_specular(bodyparts::specular);
     }
 
     cpu_context->build_request();
@@ -2866,14 +2867,14 @@ void fighter::cancel(bodypart_t type)
 
 void fighter::cancel_hands()
 {
-    cancel(bodypart::LHAND);
-    cancel(bodypart::RHAND);
+    cancel(bodyparts::bodypart::LHAND);
+    cancel(bodyparts::bodypart::RHAND);
 }
 
 bool fighter::can_windup_recoil()
 {
-    movement lhand = action_map[bodypart::LHAND];
-    movement rhand = action_map[bodypart::RHAND];
+    movement lhand = action_map[bodyparts::bodypart::LHAND];
+    movement rhand = action_map[bodyparts::bodypart::RHAND];
 
     if(lhand.does(mov::WINDUP) || rhand.does(mov::WINDUP))
     {
@@ -2885,8 +2886,8 @@ bool fighter::can_windup_recoil()
 
 bool fighter::currently_recoiling()
 {
-    movement lhand = action_map[bodypart::LHAND];
-    movement rhand = action_map[bodypart::RHAND];
+    movement lhand = action_map[bodyparts::bodypart::LHAND];
+    movement rhand = action_map[bodyparts::bodypart::RHAND];
 
     if(!lhand.does(mov::IS_RECOIL) && !rhand.does(mov::IS_RECOIL))
     {
@@ -2898,8 +2899,8 @@ bool fighter::currently_recoiling()
 
 void fighter::recoil()
 {
-    cancel(bodypart::LHAND);
-    cancel(bodypart::RHAND);
+    cancel(bodyparts::bodypart::LHAND);
+    cancel(bodyparts::bodypart::RHAND);
     queue_attack(attacks::RECOIL);
 }
 
@@ -2907,16 +2908,16 @@ void fighter::try_feint()
 {
     const float unfeintable_time = attacks::unfeintable_time;
 
-    movement lhand = action_map[bodypart::LHAND];
-    movement rhand = action_map[bodypart::RHAND];
+    movement lhand = action_map[bodyparts::bodypart::LHAND];
+    movement rhand = action_map[bodyparts::bodypart::RHAND];
 
     bool lfeint = lhand.does(mov::WINDUP) && (lhand.time_remaining() > unfeintable_time);
     bool rfeint = rhand.does(mov::WINDUP) && (rhand.time_remaining() > unfeintable_time);
 
     if(lfeint || rfeint)
     {
-        cancel(bodypart::LHAND);
-        cancel(bodypart::RHAND);
+        cancel(bodyparts::bodypart::LHAND);
+        cancel(bodyparts::bodypart::RHAND);
 
         queue_attack(attacks::FEINT);
     }
@@ -2926,7 +2927,7 @@ void fighter::try_feint()
 ///i've taken damage. If im during the windup phase of an attack, recoil
 void fighter::damage(bodypart_t type, float d, int32_t network_id_hit_by)
 {
-    using namespace bodypart;
+    using namespace bodyparts;
 
     bool do_explode_effect = num_dead() < num_needed_to_die() - 1;
 
@@ -3027,9 +3028,9 @@ void fighter::update_name_info(bool networked_fighter)
     if(!name_container)
         return;
 
-    vec3f head_pos = parts[bodypart::HEAD].global_pos;
+    vec3f head_pos = parts[bodyparts::bodypart::HEAD].global_pos;
 
-    float offset = bodypart::scale;
+    float offset = bodyparts::scale;
 
     name_container->set_pos({head_pos.v[0], head_pos.v[1] + offset, head_pos.v[2]});
     name_container->set_rot({rot.v[0], rot.v[1], rot.v[2]});
@@ -3070,7 +3071,7 @@ void fighter::update_name_info(bool networked_fighter)
 ///just sounds wrong atm
 void fighter::check_and_play_sounds(bool player)
 {
-    vec3f hpos = parts[bodypart::HEAD].global_pos;
+    vec3f hpos = parts[bodyparts::bodypart::HEAD].global_pos;
 
     for(auto& i : parts)
     {

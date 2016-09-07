@@ -1,8 +1,8 @@
-#include "../OpenCLRenderer/objects_container.hpp"
-#include "object_cube.hpp"
 #include "map_tools.hpp"
+#include "../OpenCLRenderer/objects_container.hpp"
 #include "../OpenCLRenderer/vec.hpp"
 #include "../OpenCLRenderer/obj_load.hpp"
+#include "object_cube.hpp"
 
 /*void world_map::init(const std::vector<int>& _map, int w, int h)
 {

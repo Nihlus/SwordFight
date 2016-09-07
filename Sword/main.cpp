@@ -48,7 +48,7 @@
 #endif
 
 #include "../imgui/imgui.h"
-#include "../imgui/imgui-SFML.h"
+#include "../imgui-sfml/imgui-SFML.h"
 
 #include "ui_manager.hpp"
 
@@ -364,8 +364,11 @@ int main(int argc, char *argv[])
     rect->cache = false;
     rect->set_active(true);*/
 
+#if defined(WITH_CODEBLOCKS_AUTOVERSION)
     const std::string title = std::string("Midguard V") + std::to_string(AutoVersion::MAJOR) + "." + std::to_string(AutoVersion::MINOR);
-
+#else
+	const std::string title = std::string("Midguard V1.0");
+#endif
 
     engine window;
     window.append_opencl_extra_command_line("-D SHADOWBIAS=150");
@@ -465,7 +468,7 @@ int main(int argc, char *argv[])
     sf::Mouse mouse;
     sf::Keyboard key;
 
-    vec3f original_pos = fight.parts[bodypart::LFOOT].pos;
+    vec3f original_pos = fight.parts[bodyparts::bodypart::LFOOT].pos;
 
     vec3f seek_pos = original_pos;
 
@@ -903,8 +906,8 @@ int main(int argc, char *argv[])
 
             if(once<sf::Keyboard::N>())
             {
-                vec3f loc = fight2.parts[bodypart::BODY].global_pos;
-                vec3f rot = fight2.parts[bodypart::BODY].global_rot;
+                vec3f loc = fight2.parts[bodyparts::bodypart::BODY].global_pos;
+                vec3f rot = fight2.parts[bodyparts::bodypart::BODY].global_rot;
 
                 fight2.respawn({loc.v[0], loc.v[2]});
                 fight2.set_rot(rot);
@@ -972,7 +975,7 @@ int main(int argc, char *argv[])
         window.set_light_data(light_data);
 
         ///ergh
-        sound::set_listener(my_fight->parts[bodypart::BODY].global_pos, my_fight->parts[bodypart::BODY].global_rot);
+        sound::set_listener(my_fight->parts[bodyparts::bodypart::BODY].global_pos, my_fight->parts[bodyparts::bodypart::BODY].global_rot);
 
         ///so that the listener position is exactly the body part
         my_fight->do_foot_sounds(true);

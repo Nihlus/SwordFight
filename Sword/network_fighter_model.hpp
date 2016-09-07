@@ -57,7 +57,7 @@ namespace network_message
 
 struct network_fighter
 {
-    network_part_info network_parts[bodypart::COUNT];
+    network_part_info network_parts[bodyparts::bodypart::COUNT];
 
     network_sword_info network_sword;
 

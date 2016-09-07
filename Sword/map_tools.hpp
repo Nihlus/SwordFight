@@ -1,10 +1,11 @@
 #ifndef MAP_TOOLS_HPP_INCLUDED
 #define MAP_TOOLS_HPP_INCLUDED
 
-#include <vector>
-
-#include "../OpenCLRenderer/logging.hpp"
 #include "fighter.hpp"
+#include <vector>
+#include "../OpenCLRenderer/logging.hpp"
+#include <functional>
+
 
 struct objects_container;
 
