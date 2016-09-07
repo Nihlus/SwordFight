@@ -358,13 +358,13 @@ struct map_cube_info
 
         ///+ve y
         if(connection == 0)
-            angle = M_PI/2;
+            angle = (float)M_PI/2.0f;
         if(connection == 1)
-            angle = -M_PI/2;
+            angle = (float)-M_PI/2.0f;
         if(connection == 2)
-            angle = -M_PI/2;
+            angle = (float)-M_PI/2.0f;
         if(connection == 3)
-            angle = M_PI/2;
+            angle = (float)M_PI/2.0f;
 
 
         ///recombine rotated up and forward. We might be able to construct a proper
@@ -411,7 +411,7 @@ struct map_cube_info
     ///NOTHING WORTH EASY IS DOING
     vec3f get_smooth_up_vector(int face, vec2f offset, int dim, float height_offset)
     {
-        height_offset = fabs(height_offset);
+        height_offset = (float)fabs(height_offset);
 
         vec2f xoffset = {offset.v[0], 0};
         vec2f yoffset = {0, offset.v[1]};
@@ -481,9 +481,9 @@ struct map_cube_info
         ///now map to circle
         float cangle = dot(cur_up.norm(), ip_y.norm());
 
-        float angle = acos(cangle);
+        float angle = (float)acos(cangle);
 
-        float tangle = tan(angle);
+        float tangle = (float)tan(angle);
 
         float odist = height_offset * tangle;
 
@@ -601,7 +601,7 @@ struct map_cube_info
         float axis_frac = get_axis_frac(offset, dim);
         float laxis_frac = get_axis_frac(-offset, dim);
 
-        axis_frac = fabs(axis_frac);
+        axis_frac = (float)fabs(axis_frac);
 
         if(axis_frac <= 0.001f)
         {
@@ -610,7 +610,7 @@ struct map_cube_info
             rplane = lrplane;
         }
 
-        axis_frac = fabs(axis_frac);
+        axis_frac = (float)fabs(axis_frac);
 
         axis_frac /= 2.f;
 
@@ -637,7 +637,7 @@ struct map_cube_info
         float axis_frac = get_axis_frac(offset, dim);
         float laxis_frac = get_axis_frac(-offset, dim);
 
-        axis_frac = fabs(axis_frac);
+        axis_frac = (float)fabs(axis_frac);
 
         if(axis_frac <= 0.001f)
         {
@@ -646,7 +646,7 @@ struct map_cube_info
             rplane = lrplane;
         }
 
-        axis_frac = fabs(axis_frac);
+        axis_frac = (float)fabs(axis_frac);
 
         axis_frac /= 2.f;
 

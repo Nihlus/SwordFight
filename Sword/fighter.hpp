@@ -867,7 +867,7 @@ struct fighter
     void flinch(float time_ms);
 
     ///resets all vars
-    void respawn(vec2f pos = (vec2f){0,0});
+    void respawn(vec2f pos = vec2f(0));
     void die();
     bool should_die();
     int num_dead();
