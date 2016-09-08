@@ -58,127 +58,18 @@
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="120">
-              <caret line="8" column="102" selection-start-line="8" selection-start-column="102" selection-end-line="8" selection-end-column="102" />
+              <caret line="8" column="53" selection-start-line="8" selection-start-column="53" selection-end-line="8" selection-end-column="102" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="physics.cpp" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/physics.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-137">
-              <caret line="109" column="10" selection-start-line="109" selection-start-column="10" selection-end-line="109" selection-end-column="10" />
-              <folding>
-                <element signature="e#0#22#0" expanded="true" />
-                <marker date="1473346803267" expanded="true" signature="11846:13519" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ui_manager.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../OpenCLRenderer/ui_manager.cpp">
+      <file leaf-file-name="server_networking.cpp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/server_networking.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="203">
-              <caret line="97" column="0" selection-start-line="97" selection-start-column="0" selection-end-line="97" selection-end-column="0" />
+              <caret line="430" column="36" selection-start-line="430" selection-start-column="36" selection-end-line="430" selection-end-column="36" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="vec.hpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../libraries/vec/vec.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="749" column="28" selection-start-line="749" selection-start-column="0" selection-end-line="750" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ui_manager.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ui_manager.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#25#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="1015" column="0" selection-start-line="1015" selection-start-column="0" selection-end-line="1015" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="space_manager.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../OpenCLRenderer/Game/space_manager.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="24" selection-start-line="0" selection-start-column="24" selection-end-line="0" selection-end-column="24" />
-              <folding>
-                <marker date="1473335433490" expanded="true" signature="138:546" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="618:661" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="735:765" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="828:858" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="924:987" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="1074:2031" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="2122:2580" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="2670:3452" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="3577:4115" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="4214:4785" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="4864:5283" ph="{...}" />
-                <marker date="1473335433490" expanded="true" signature="5331:5551" ph="{...}" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="goo.hpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../OpenCLRenderer/goo.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="21" selection-start-line="3" selection-start-column="21" selection-end-line="3" selection-end-column="21" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="network.cpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../OpenCLRenderer/network.cpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="376">
-              <caret line="218" column="24" selection-start-line="218" selection-start-column="24" selection-end-line="218" selection-end-column="24" />
-              <folding>
-                <element signature="e#43#91#0" expanded="true" />
-                <element signature="e#117#139#0" expanded="true" />
-                <element signature="e#437#456#0" expanded="true" />
-                <element signature="e#1583#1709#0" expanded="true" />
-                <element signature="e#3686#3830#0" expanded="true" />
-                <element signature="e#4727#4747#0" expanded="true" />
-                <element signature="e#5226#5371#0" expanded="true" />
-                <element signature="e#10462#10496#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="shared.hpp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../libraries/net/shared.hpp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
-              <folding>
-                <element signature="e#97#145#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -216,6 +107,7 @@
         <option value="$PROJECT_DIR$/../../libraries/vec/vec.hpp" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
         <option value="$PROJECT_DIR$/physics.cpp" />
+        <option value="$PROJECT_DIR$/server_networking.cpp" />
       </list>
     </option>
   </component>
@@ -533,19 +425,19 @@
       <workItem from="1473169200664" duration="3818000" />
       <workItem from="1473277027481" duration="9064000" />
       <workItem from="1473290186662" duration="850000" />
-      <workItem from="1473329147086" duration="6128000" />
+      <workItem from="1473329147086" duration="6960000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19860000" />
+    <option name="totallyTimeSpent" value="20692000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="-1" width="1920" height="1050" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32983193" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32983193" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32878152" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -872,7 +764,7 @@
         <state relative-caret-position="45">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
-            <element signature="e#57#85#0" expanded="true" />
+            <element signature="e#57#85#0" expanded="false" />
             <marker date="1473335401318" expanded="true" signature="11382:11486" ph="{...}" />
             <marker date="1473335401318" expanded="true" signature="11572:11677" ph="{...}" />
             <marker date="1473335401318" expanded="true" signature="12719:16638" ph="{...}" />
@@ -930,14 +822,14 @@
         <state relative-caret-position="376">
           <caret line="218" column="24" selection-start-line="218" selection-start-column="24" selection-end-line="218" selection-end-column="24" />
           <folding>
-            <element signature="e#43#91#0" expanded="true" />
-            <element signature="e#117#139#0" expanded="true" />
-            <element signature="e#437#456#0" expanded="true" />
-            <element signature="e#1583#1709#0" expanded="true" />
-            <element signature="e#3686#3830#0" expanded="true" />
-            <element signature="e#4727#4747#0" expanded="true" />
-            <element signature="e#5226#5371#0" expanded="true" />
-            <element signature="e#10462#10496#0" expanded="true" />
+            <element signature="e#43#91#0" expanded="false" />
+            <element signature="e#117#139#0" expanded="false" />
+            <element signature="e#437#456#0" expanded="false" />
+            <element signature="e#1583#1709#0" expanded="false" />
+            <element signature="e#3686#3830#0" expanded="false" />
+            <element signature="e#4727#4747#0" expanded="false" />
+            <element signature="e#5226#5371#0" expanded="false" />
+            <element signature="e#10462#10496#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -958,24 +850,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ui_manager.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#25#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="102" selection-start-line="8" selection-start-column="102" selection-end-line="8" selection-end-column="102" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../libraries/vec/vec.hpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="203">
@@ -989,9 +863,35 @@
         <state relative-caret-position="-137">
           <caret line="109" column="10" selection-start-line="109" selection-start-column="10" selection-end-line="109" selection-end-column="10" />
           <folding>
-            <element signature="e#0#22#0" expanded="true" />
+            <element signature="e#0#22#0" expanded="false" />
             <marker date="1473346803267" expanded="true" signature="11846:13519" ph="{...}" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ui_manager.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#25#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="53" selection-start-line="8" selection-start-column="53" selection-end-line="8" selection-end-column="102" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/server_networking.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="203">
+          <caret line="430" column="36" selection-start-line="430" selection-start-column="36" selection-end-line="430" selection-end-column="36" />
+          <folding />
         </state>
       </provider>
     </entry>

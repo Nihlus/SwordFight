@@ -33,7 +33,7 @@ void server_networking::join_master()
 
     if(master_info.valid())
     {
-	    to_master.close_tcp_socket();
+	    to_master.close_socket();
 
         to_master = tcp_sock(master_info.get());
 
@@ -52,7 +52,7 @@ void server_networking::join_game_tick(const std::string& address, const std::st
     //if(game_info.valid())
     if(!to_game.valid())
     {
-	    to_game.close_tcp_socket();
+	    to_game.close_socket();
 
         to_game = udp_connect(address, port);
 
@@ -428,7 +428,7 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
                     print_serverlist();
 
                     ///we're done here
-	                to_master.close_tcp_socket();
+	                to_master.close_socket();
                 }
                 else
                 {
