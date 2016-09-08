@@ -28,6 +28,7 @@ set(SWORD_SOURCES
 		${PROJECT_SOURCE_DIR}/physics.cpp
 		${PROJECT_SOURCE_DIR}/server_networking.cpp
 		${PROJECT_SOURCE_DIR}/sound.cpp
+		${PROJECT_SOURCE_DIR}/ui_manager.cpp
 		${PROJECT_SOURCE_DIR}/text.cpp)
 
 set(SWORD_HEADERS
@@ -45,6 +46,7 @@ set(SWORD_HEADERS
 		${PROJECT_SOURCE_DIR}/server_networking.hpp
 		${PROJECT_SOURCE_DIR}/sound.hpp
 		${PROJECT_SOURCE_DIR}/text.hpp
+		${PROJECT_SOURCE_DIR}/ui_manager.hpp
 		${PROJECT_SOURCE_DIR}/util.hpp)
 
 set(RENDERER_SOURCES
@@ -116,6 +118,15 @@ set(SERVER_HEADERS
 		${PROJECT_SOURCE_DIR}/../sword_server/reliability_shared.hpp
 		${PROJECT_SOURCE_DIR}/../sword_server/teaminfo_shared.hpp)
 
+set(IMGUI_SOURCES
+		${PROJECT_SOURCE_DIR}/../../libraries/imgui/imgui.cpp
+		${PROJECT_SOURCE_DIR}/../../libraries/imgui/imgui_draw.cpp
+		${PROJECT_SOURCE_DIR}/../../libraries/imgui-sfml/imgui-SFML.cpp)
+
+set(IMGUI_HEADERS
+		${PROJECT_SOURCE_DIR}/../../libraries/imgui/imgui.h
+		${PROJECT_SOURCE_DIR}/../../libraries/imgui-sfml/imgui-SFML.h)
+
 include_directories(
 		${PROJECT_SOURCE_DIR}/
 		${PROJECT_SOURCE_DIR}/../../libraries/
@@ -124,7 +135,7 @@ include_directories(
 		${PROJECT_SOURCE_DIR}/../../libraries/compute/include
 )
 
-add_executable(${PROJECT_NAME} ${SWORD_SOURCES} ${SWORD_HEADERS} ${SERVER_SOURCES} ${SERVER_HEADERS} ${RENDERE_SOURCES} ${RENDERER_HEADERS})
+add_executable(${PROJECT_NAME} ${SWORD_SOURCES} ${SWORD_HEADERS} ${SERVER_SOURCES} ${SERVER_HEADERS} ${RENDERER_SOURCES} ${RENDERER_HEADERS} ${IMGUI_SOURCES} ${IMGUI_HEADERS})
 
 target_link_libraries(
 		${PROJECT_NAME}

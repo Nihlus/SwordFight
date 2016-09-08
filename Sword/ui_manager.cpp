@@ -1,6 +1,6 @@
 #include "ui_manager.hpp"
-#include "../imgui/imgui-SFML.h"
-#include "../openclrenderer/settings_loader.hpp"
+#include "../imgui-sfml/imgui-SFML.h"
+#include "../OpenCLRenderer/settings_loader.hpp"
 #include "fighter.hpp"
 
 int window_element_ids::label_gid;
@@ -215,7 +215,7 @@ void ui_manager::tick_health_display(fighter* my_fight)
                   float scale_min = FLT_MAX, float scale_max = FLT_MAX,
                   ImVec2 graph_size = ImVec2(0,0), int stride = sizeof(float));*/
 
-    using namespace bodypart;
+    using namespace bodyparts;
 
     std::vector<float> vals;
     std::vector<std::string> labels;

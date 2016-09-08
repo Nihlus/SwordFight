@@ -1,13 +1,8 @@
-#include "physics.hpp"
-
-#include <iostream>
-
-#include "../OpenCLRenderer/objects_container.hpp"
-
-#include <float.h>
-
 #include "fighter.hpp"
-
+#include "physics.hpp"
+#include <iostream>
+#include "../OpenCLRenderer/objects_container.hpp"
+#include <float.h>
 #include <CL/cl.h> ///sigh
 #include "../OpenCLRenderer/engine.hpp"
 
@@ -165,7 +160,7 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
         {
             if(bodies[i].p->team != w.team && bodies[i].p->alive() && bodies[i].within(pos, {min_dist, min_dist, min_dist}) && bodies[i].p->is_active)
             {
-                bodypart_t type = (bodypart_t)(i % bodypart::COUNT);
+                bodypart_t type = (bodypart_t)(i % bodyparts::bodypart::COUNT);
 
                 fighter* them = bodies[i].parent;
 
@@ -178,11 +173,11 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                 if(them->num_dead() >= them->num_needed_to_die())
                     continue;
 
-                float arm_length = (them->rest_positions[bodypart::LUPPERARM] - them->rest_positions[bodypart::LHAND]).length();
+                float arm_length = (them->rest_positions[bodyparts::bodypart::LUPPERARM] - them->rest_positions[bodyparts::bodypart::LHAND]).length();
 
                 ///these are also very likely working as extrinsic rotations
                 float their_x = sin(them->look_displacement.v[1] / arm_length);
-                float their_y = them->parts[bodypart::BODY].global_rot.v[1];
+                float their_y = them->parts[bodyparts::bodypart::BODY].global_rot.v[1];
 
                 ///this is very likely correct!
                 vec3f rotated_sword_dir = sword_move_dir.rot({0,0,0}, my_parent->rot);
@@ -197,7 +192,7 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                 vec3f t_look = (vec3f){0, 0, -1}.rot({0,0,0}, -(vec3f){their_x, 0.f, 0.f});
 
                 ///this one transforms the rotation into global rotation space
-                t_look = t_look.rot({0,0,0}, them->parts[bodypart::BODY].global_rot);
+                t_look = t_look.rot({0,0,0}, them->parts[bodyparts::bodypart::BODY].global_rot);
 
                 ///angle between look and sword direction
                 ///we want the opposite direction for one of these components
@@ -236,11 +231,11 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                 //printf("%i\n", them->net.is_blocking);
 
                 ///this is THEIR current action
-                movement m1 = them->action_map[bodypart::LHAND];
-                movement m2 = them->action_map[bodypart::RHAND];
+                movement m1 = them->action_map[bodyparts::bodypart::LHAND];
+                movement m2 = them->action_map[bodyparts::bodypart::RHAND];
 
-                movement y1 = my_parent->action_map[bodypart::LHAND];
-                movement y2 = my_parent->action_map[bodypart::RHAND];
+                movement y1 = my_parent->action_map[bodyparts::bodypart::LHAND];
+                movement y2 = my_parent->action_map[bodyparts::bodypart::RHAND];
 
                 ///recoil. Sword collides is only called for attacks that damage, so therefore this is fine
                 ///blocking recoil IS handled over the network currently
@@ -294,7 +289,7 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                 ///this doesn't get networked...?
                 ///networking has no idea what move they're currently doing
                 ///always send them a recoil regardless, and they can work it out
-                if((type == bodypart::LHAND || type == bodypart::RHAND))
+                if((type == bodyparts::bodypart::LHAND || type == bodyparts::bodypart::RHAND))
                 {
                     if(m1.does(mov::WINDUP) || m2.does(mov::WINDUP))
                     {
@@ -321,7 +316,7 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                     if(is_player)
                         text::add("Hrrk!", time, {scr.x, scr.y});
                     else
-                        text::add_random(std::string("Crikey!") + " My " + bodypart::ui_names[i % bodypart::COUNT] + "!", time);
+                        text::add_random(std::string("Crikey!") + " My " + bodyparts::ui_names[i % bodyparts::bodypart::COUNT] + "!", time);
 
 
                     ///recoil request gets set in ::damage

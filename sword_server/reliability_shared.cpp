@@ -1,7 +1,7 @@
 #include "reliability_shared.hpp"
 #include <net/shared.hpp>
 #include "master_server/network_messages.hpp"
-#include "../openclrenderer/logging.hpp"
+#include "../OpenCLRenderer/logging.hpp"
 
 ///wraps data in forward reliable, and gives it an id
 void reliability_manager::add(const byte_vector& vec)

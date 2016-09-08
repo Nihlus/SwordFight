@@ -424,13 +424,13 @@ struct map_cube_info
             absolute_offsets.v[i] = absolute_offsets.v[i] + pos_within_plane;
         }
 
-        std::function<int(vec2f)> func = std::bind(get_new_face, this, std::placeholders::_1, dim);
+        std::function<int(vec2f)> func = std::bind(&map_cube_info::get_new_face, this, std::placeholders::_1, dim);
 
         vec4i new_faces = absolute_offsets.map(func);
 
         ///float get_axis_frac(vec2f offset, int dim)
 
-        std::function<float(vec2f)> axis_frac = std::bind(get_axis_frac, this, std::placeholders::_1, dim);
+        std::function<float(vec2f)> axis_frac = std::bind(&map_cube_info::get_axis_frac, this, std::placeholders::_1, dim);
 
         vec4f residuals = offsets.map(axis_frac);
 
