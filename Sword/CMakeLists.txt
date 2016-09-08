@@ -6,7 +6,7 @@ set(Sword_VERSION_MINOR 0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
-add_compile_options(-std=gnu++14 -Wno-c++11-narrowing)
+add_compile_options(-std=gnu++14 -Wno-c++11-narrowing -fexceptions -DCL_USE_DEPRECATED_OPENCL_1_1_APIS)
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cmake_modules" ${CMAKE_MODULE_PATH})
 
 find_package(OpenGL)
@@ -23,6 +23,7 @@ set(SWORD_SOURCES
 		${PROJECT_SOURCE_DIR}/map_tools.cpp
 		${PROJECT_SOURCE_DIR}/menu.cpp
 		${PROJECT_SOURCE_DIR}/music.cpp
+		${PROJECT_SOURCE_DIR}/network_fighter_model.cpp
 		${PROJECT_SOURCE_DIR}/object_cube.cpp
 		${PROJECT_SOURCE_DIR}/particle_effect.cpp
 		${PROJECT_SOURCE_DIR}/physics.cpp
@@ -40,6 +41,7 @@ set(SWORD_HEADERS
 		${PROJECT_SOURCE_DIR}/map_tools.hpp
 		${PROJECT_SOURCE_DIR}/menu.hpp
 		${PROJECT_SOURCE_DIR}/music.hpp
+		${PROJECT_SOURCE_DIR}/network_fighter_model.hpp
 		${PROJECT_SOURCE_DIR}/object_cube.hpp
 		${PROJECT_SOURCE_DIR}/particle_effect.hpp
 		${PROJECT_SOURCE_DIR}/physics.hpp

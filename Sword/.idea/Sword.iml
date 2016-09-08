@@ -88,6 +88,7 @@
       <sourceFolder url="file://$MODULE_DIR$/util.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/object_cube.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ui_manager.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bbox.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/particle_effect.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server_networking.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ui_manager.cpp" isTestSource="false" />
@@ -103,11 +104,12 @@
       <sourceFolder url="file://$MODULE_DIR$/sound.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/menu.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cape.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sound.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/map_tools.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/menu.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bbox.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/text.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/game_state_manager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/physics.cpp" isTestSource="false" />
