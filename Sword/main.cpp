@@ -1257,6 +1257,9 @@ int main(int argc, char *argv[])
             window.draw_bulk_objs_n(*cdat);
             window.do_pseudo_aa();
 
+            if(s.motion_blur_strength > 0.01f)
+                window.do_motion_blur(*cdat, s.motion_blur_strength, s.motion_blur_camera_contribution);
+
             //window.draw_godrays(*cdat);
         }
 
@@ -1274,8 +1277,8 @@ int main(int argc, char *argv[])
 
             event = window.blend_with_depth(*tctx, *cdat);
 
-            cdat->swap_depth_buffers();
-            tctx->swap_depth_buffers();
+            cdat->swap_buffers();
+            tctx->swap_buffers();
 
             window.increase_render_events();
 
