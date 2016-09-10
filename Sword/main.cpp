@@ -372,7 +372,7 @@ int main(int argc, char *argv[])
 
     engine window;
     window.append_opencl_extra_command_line("-D SHADOWBIAS=150");
-    window.load(s.width,s.height, 1000, title, "../OpenCLRenderer/cl2.cl", true);
+    window.load(s.width,s.height, 1000, title, "cl2.cl", true);
     ImGui::SFML::Init(window.window);
     window.manual_input = true;
 

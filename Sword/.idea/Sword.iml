@@ -7,6 +7,9 @@
     <content url="file://$MODULE_DIR$/../../OpenCLRenderer/Game/space_manager.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/Game/space_manager.cpp" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/cl_gl_interop_texture.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/cl_gl_interop_texture.cpp" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../../OpenCLRenderer/clstate.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/clstate.cpp" isTestSource="false" />
     </content>
@@ -84,11 +87,11 @@
       <sourceFolder url="file://$MODULE_DIR$/map_tools.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/colour_defines.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/game_state_manager.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/particle_effect.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/util.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/object_cube.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ui_manager.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/bbox.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/particle_effect.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server_networking.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ui_manager.cpp" isTestSource="false" />
@@ -107,9 +110,9 @@
       <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sound.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/map_tools.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/menu.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/menu.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/bbox.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/text.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/game_state_manager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/physics.cpp" isTestSource="false" />

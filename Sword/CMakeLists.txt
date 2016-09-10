@@ -13,7 +13,7 @@ find_package(OpenGL)
 find_package(OpenCL)
 find_package(GLEW)
 find_package(Threads)
-find_package(SFML 2 REQUIRED system window graphics network audio)
+find_package(SFML 2 REQUIRED system window graphics audio)
 
 set(SWORD_SOURCES
 		${PROJECT_SOURCE_DIR}/cape.cpp
@@ -54,6 +54,7 @@ set(SWORD_HEADERS
 set(RENDERER_SOURCES
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/Galaxy/galaxy.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/space_manager.cpp
+		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cl_gl_interop_texture.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/clstate.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/controls.cpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/engine.cpp
@@ -82,6 +83,7 @@ set(RENDERER_SOURCES
 set(RENDERER_HEADERS
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/Galaxy/galaxy.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/space_manager.hpp
+		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cl_gl_interop_texture.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/clstate.h
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/controls.hpp
 		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/engine.hpp
