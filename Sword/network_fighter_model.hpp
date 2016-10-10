@@ -52,6 +52,8 @@ struct network_wrap
     {
         unmodified_val = networked_val;
         local_val = networked_val;
+
+        should_network = false;
     }
 
     void network_local()
@@ -71,6 +73,7 @@ struct network_part_info
     vec3f global_rot;
 
     float hp = 0;
+    network_wrap<damage_info> requested_damage_info;
     int32_t play_hit_audio = 0;
 };
 

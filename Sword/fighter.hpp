@@ -9,6 +9,12 @@
 #include "cape.hpp"
 //#include "map_tools.hpp"
 
+struct damage_info
+{
+    float hp_delta = 0;
+    int32_t id_hit_by = -1;
+};
+
 namespace mov
 {
     enum movement_type : unsigned int
@@ -33,7 +39,11 @@ namespace mov
         INVERSE_OVERHEAD_HACK = 1 << 14,
         IS_RECOIL = 1 << 15,
         NO_MOVEMENT = 1 << 16,
-        ALT_ATTACK = 1 << 17
+        ALT_ATTACK = 1 << 17,
+        CONTINUOUS_SPRINT = 1 << 18, ///terminates the moment we stop doing the attack
+        NO_POST_QUEUE = 1 << 19, ///cannot be queued after
+        NO_CAMERA_LIMIT = 1 << 20,
+        ORIENT_TOWARDS_FACE = 1 << 21,
     };
 }
 
@@ -156,7 +166,31 @@ namespace bodyparts
         0.f
     };
 
+    ///lets have a forward wiggle thats also based on the hip up/down
     ///fix the god damn reversal
+    constexpr static float forward_thrust_hip_relative[COUNT] =
+    {
+        0.f,
+        -1.f,
+        -0.5f,
+        -1.f,
+        -0.5f,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    };
+
+    constexpr float overall_forward_thrust_mod = 0.04f;
+    constexpr float overall_forward_thrust_mod_nonsprint = 0.02f;
+
+    constexpr float sprint_acceleration_time_ms = 250.f;
+
     static std::vector<std::string> short_names =
     {
         "Head",
@@ -244,7 +278,7 @@ struct damage_information
 
 struct delayed_delta
 {
-    damage_information delayed_info;
+    damage_info delayed_info;
     float delay_time_ms = 200.f;
     sf::Clock clk;
 };
@@ -252,10 +286,10 @@ struct delayed_delta
 ///this was a good idea
 struct network_part
 {
-    bool hp_dirty = false;
+    //bool hp_dirty = false;
     //float hp_delta = 0.f;
 
-    damage_information damage_info;
+    //damage_information damage_info;
 
     std::vector<delayed_delta> delayed_delt;
 
@@ -267,6 +301,8 @@ struct local_part
     int32_t play_hit_audio = 0;
     int32_t send_hit_audio = 0;
 };
+
+struct fighter;
 
 ///need to network part hp
 struct part
@@ -299,8 +335,9 @@ struct part
 
     void set_team(int _team);
     void load_team_model();
-    void damage(float dam, bool do_effect = true, int32_t network_id_hit_by = -1);
+    void damage(fighter* parent, float dam, bool do_effect = true, int32_t network_id_hit_by = -1);
     void set_hp(float h);
+    void request_network_hp_delta(float delta, fighter* parent);
     void perform_death(bool do_effect = true);
 
     void set_quality(int _quality);
@@ -382,6 +419,7 @@ struct movement
     ///even if !i.does(damaging), still might have a damage value
     ///if its part of an attack with some damage value to it
     float damage = 0.f;
+    int was_set_this_frame = 0;
 };
 
 namespace attacks
@@ -397,6 +435,8 @@ namespace attacks
         BLOCK,
         RECOIL,
         FEINT,
+        SPRINT,
+        TROMBONE,
         COUNT
     };
 
@@ -534,6 +574,21 @@ static std::vector<movement> feint =
     {0, {0, -150, -140}, 300, 3, bodyparts::bodypart::LHAND,  (movement_t)(mov::NONE)} ///attack
 };
 
+///remember that this needs to be in 3 parts eventually
+///windup, continuous, winddown
+///with windup staggerable
+static std::vector<movement> sprint
+{
+    ///for gameplay balance a camera limit is probably good
+    ///but to be honest its fairly horrible to play with, you should be able to freely sprint and look
+    {0, {100, -200, -100}, 200, 0, bodypart::LHAND, (movement_t)(mov::CONTINUOUS_SPRINT | mov::NO_POST_QUEUE | mov::NO_CAMERA_LIMIT)}
+};
+
+static std::vector<movement> trombone_hold
+{
+    {0, {-50, -50, -100}, 200, 0, bodypart::LHAND, mov::ORIENT_TOWARDS_FACE}
+};
+
 ///?
 //static std::vector<movement> jump;
 ///hmm. This is probably a bad plan
@@ -549,7 +604,9 @@ static std::map<attack_t, attack> attack_list =
     {attacks::REST, {rest}},
     {attacks::BLOCK, {block}},
     {attacks::RECOIL, {recoil}},
-    {attacks::FEINT, {feint}}
+    {attacks::FEINT, {feint}},
+    {attacks::SPRINT, {sprint}},
+    {attacks::TROMBONE, {trombone_hold}},
 };
 
 /*static std::map<attack_t, attack> attack_list2 =
@@ -588,8 +645,11 @@ struct sword
     objects_container* obj();
     void update_model();
 
+    void set_active(bool active);
+
 private:
     object_context* cpu_context = nullptr;
+    bool is_active = true;
 };
 
 ///define attacks in terms of a start, an end, a time, and possibly a smoothing function
@@ -709,6 +769,8 @@ struct fighter
     ///the player does not have a valid instance of this
     network_fighter* net_fighter_copy;
 
+    bool reset_screenshake_flinch = false;
+
     bool name_info_initialised = false;
 
     map_cube_info* cube_info = nullptr;
@@ -719,6 +781,9 @@ struct fighter
     float last_hp_delta = 0;
     int32_t player_id_i_was_last_hit_by = -1;
     int32_t network_id = -1;
+
+    int gpu_name_dirty;
+    float rand_offset_ms;
 
     cosmetics cosmetic;
 
@@ -785,8 +850,12 @@ struct fighter
 
     vec3f look;
 
+    bool is_sprinting;
+    float sprint_frac;
+
     bool idling;
     bool performed_death; ///have i done my death stuff locally
+    bool is_offline_client = false; ///offline compatability for bots
 
     int quality; /// 0 = low, 1 = high
 
@@ -834,6 +903,7 @@ struct fighter
     void update_lights();
     void recalculate_link_positions_from_parts();
     void overwrite_parts_from_model();
+    void save_old_pos(); ///network only
     void update_texture_by_part_hp();
     void update_last_hit_id();
     void check_clientside_parry(fighter* non_networked_fighter);
@@ -860,6 +930,8 @@ struct fighter
 
     bool can_attack(bodypart_t type);
 
+    movement* get_current_move(bodypart_t type);
+
     void cancel_hands();
     void recoil();
     bool can_windup_recoil();
@@ -867,7 +939,9 @@ struct fighter
     void checked_recoil(); ///if we're hit, do a recoil if we're in windup
     void try_feint();
 
-    void damage(bodypart_t type, float d, int32_t network_id_hit_by);
+    void override_rhand_pos(vec3f global_position);
+
+    void damage(bodypart_t type, float d, int32_t network_id_hit_by, bool hit_by_offline_client = false);
 
     void flinch(float time_ms);
 
@@ -896,6 +970,7 @@ struct fighter
     void do_foot_sounds(bool is_player = false);
 
     void set_name(std::string _name);
+    void update_gpu_name();
     void set_secondary_context(object_context* _transparency_context);
     void update_name_info(bool networked_fighter = false);
 
@@ -936,6 +1011,9 @@ private:
     bool right_foot_sound;
 
     bool just_spawned = true;
+
+    bool rhand_overridden = false;
+    vec3f rhand_override_pos;
 };
 
 

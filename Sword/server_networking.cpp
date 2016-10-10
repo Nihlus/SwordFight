@@ -198,7 +198,9 @@ std::map<int, ptr_info> build_fighter_network_stack(network_player* net_fight)
         fighter_stack[c++] = get_inf<s_f3>(&net->network_parts[i].global_rot);
         fighter_stack[c++] = get_inf(&net->network_parts[i].hp);
 
-        fighter_stack[c++] = get_inf(&fight->parts[i].net.damage_info);
+        //fighter_stack[c++] = get_inf(&fight->parts[i].net.damage_info);
+        //fighter_stack[c++] = get_inf(&net->network_parts[i].requested_damage_info);
+        fighter_stack[c++] = get_inf(net->network_parts[i].requested_damage_info.get_networking_ptr());
         fighter_stack[c++] = get_inf(&fight->parts[i].net.play_hit_audio);
     }
 
@@ -240,7 +242,7 @@ void set_map_element(std::map<int, ptr_info>& change, std::map<int, ptr_info>& s
     change[pos] = get_inf<N>(elem);
 }
 
-bool is_damage_info(fighter* fight, void* ptr)
+/*bool is_damage_info(fighter* fight, void* ptr)
 {
     for(auto& i : fight->parts)
     {
@@ -249,7 +251,7 @@ bool is_damage_info(fighter* fight, void* ptr)
     }
 
     return false;
-}
+}*/
 
 std::map<int, ptr_info> build_host_network_stack(network_player* net_fight)
 {
@@ -679,10 +681,77 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
         }
     }
 
-    if(is_init && to_game.valid() && (time_since_last_send.getElapsedTime().asMicroseconds() / 1000.f) > time_between_sends_ms)
+    if(is_init && to_game.valid())// && (time_since_last_send.getElapsedTime().asMicroseconds() / 1000.f) > time_between_sends_ms)
     {
         if(have_id && discovered_fighters[my_id].fight != nullptr)
         {
+            fighter* nfight = discovered_fighters[my_id].fight;
+            network_fighter* net_nfight = discovered_fighters[my_id].net_fighter;
+
+            network_fighter network_backup = *net_nfight;
+
+            ///remove damage I've taken from player who i blocked in a clientside parry
+            nfight->process_delayed_deltas();
+            nfight->eliminate_clientside_parry_invulnerability_damage();
+
+            ///so, everyone receives the hp_delta of the client, but only the hoest is updating this piece of information here
+            for(int i=0; i<nfight->parts.size(); i++)
+            {
+                part& p = nfight->parts[i];
+                network_part_info& net_p = net_nfight->network_parts[i];
+
+                ///this structure is NOT polluted *EVER* with local client data
+                ///local client data is stored in a separate structure, and only used above
+                ///this copy is restored afterwards
+                if(net_p.requested_damage_info.networked_val.hp_delta != 0)
+                {
+                    delayed_delta delt;
+                    ///hmm. Update internal is never called on the networking model stuff
+                    delt.delayed_info = net_p.requested_damage_info.networked_val;
+
+                    int32_t id_who_hit_me = net_p.requested_damage_info.networked_val.id_hit_by;
+
+                    if(id_who_hit_me >= 0)
+                    {
+                        network_player& play = discovered_fighters[id_who_hit_me];
+
+                        if(play.id >= 0)
+                        {
+                            float my_ping = nfight->net.ping;
+                            float their_ping = play.fight->net.ping;
+
+                            float full_rtt_time = my_ping + their_ping;
+
+                            delt.delay_time_ms = full_rtt_time;
+
+                            lg::log("delaying by ", delt.delay_time_ms, "ms");
+                        }
+                        else
+                        {
+                            lg::log("Error, invalid fighter beginning delayed damage delta ", play.id);
+
+                            discovered_fighters.erase(id_who_hit_me);
+                        }
+                    }
+
+                    p.net.delayed_delt.push_back(delt);
+
+                    lg::log("Logging the start of a delayed delta from ", net_p.requested_damage_info.networked_val.id_hit_by);
+
+                    ///if two packets arrive at once, this will not work correctly
+                    nfight->last_hp_delta = net_p.requested_damage_info.networked_val.hp_delta;
+                    nfight->last_part_id = i;
+
+                    ///???
+                    net_p.requested_damage_info.networked_val.hp_delta = 0.f;
+
+                    nfight->player_id_i_was_last_hit_by = net_p.requested_damage_info.networked_val.id_hit_by;
+
+                    //printf("You've been hit by, you've been struck by, player with id %i\n", my_fighter->player_id_i_was_last_hit_by);
+                }
+            }
+
+            ///wtf? We're overwriting the whole networking model for this fighter!!
             *discovered_fighters[my_id].net_fighter = discovered_fighters[my_id].fight->construct_network_fighter();
 
             std::map<int, ptr_info> host_stack = build_host_network_stack(&discovered_fighters[my_id]);
@@ -768,25 +837,38 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
                         fight->local.send_clang_audio = 0;
                     }
 
-                    for(auto& i : fight->parts)
+                    //for(part& i : fight->parts)
+                    for(int kk=0; kk < fight->parts.size(); kk++)
                     {
-                        if(i.net.hp_dirty)
+                        part& local_part = fight->parts[kk];
+
+                        /*if(i.net.hp_dirty)
                         {
                             network_update_element_reliable<damage_information>(this, &i.net.damage_info, &net_fighter.second);
 
                             i.net.damage_info.hp_delta = 0.f;
 
                             i.net.hp_dirty = false;
+                        }*/
+
+                        network_part_info& net_part = net_fight->network_parts[kk];
+
+                        ///so the local hp delta should be reset in construct from network
+                        if(net_part.requested_damage_info.should_send())
+                        {
+                            network_update_element_reliable<damage_info>(this, net_part.requested_damage_info.get_networking_ptr(), &net_fighter.second);
+
+                            //printf("Sending damage info %f %i\n", net_part.requested_damage_info.networked_val.hp_delta, net_part.requested_damage_info.networked_val.id_hit_by);
                         }
 
-                        if(i.local.send_hit_audio)
+                        if(local_part.local.send_hit_audio)
                         {
-                            i.net.play_hit_audio = 1;
+                            local_part.net.play_hit_audio = 1;
 
-                            network_update_element_reliable<int32_t>(this, &i.net.play_hit_audio, &net_fighter.second);
+                            network_update_element_reliable<int32_t>(this, &local_part.net.play_hit_audio, &net_fighter.second);
 
-                            i.net.play_hit_audio = 0;
-                            i.local.send_hit_audio = 0;
+                            local_part.net.play_hit_audio = 0;
+                            local_part.local.send_hit_audio = 0;
                         }
                     }
                 }
@@ -849,73 +931,9 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
                 udp_send(to_game, vec.ptr);
             }
 
-            ///remove damage I've taken from player who i blocked in a clientside parry
-            my_fighter->process_delayed_deltas();
-            my_fighter->eliminate_clientside_parry_invulnerability_damage();
-
-            ///so, everyone receives the hp_delta of the client, but only the hoest is updating this piece of information here
-            //for(auto& i : my_fighter->parts)
-            for(int i=0; i<my_fighter->parts.size(); i++)
-            {
-                part& p = my_fighter->parts[i];
-
-                ///I set my own HP, don't update my hp with the delta
-                if(p.net.hp_dirty)
-                {
-                    p.net.hp_dirty = false;
-                    p.net.damage_info.hp_delta = 0.f;
-                }
-
-                if(p.net.damage_info.hp_delta != 0.f)
-                {
-                    //p.hp += p.net.damage_info.hp_delta;
-
-                    delayed_delta delt;
-                    delt.delayed_info = p.net.damage_info;
-
-                    int32_t id_who_hit_me = p.net.damage_info.id_hit_by;
-
-                    if(id_who_hit_me >= 0)
-                    {
-                        network_player& play = discovered_fighters[id_who_hit_me];
-
-                        if(play.id >= 0)
-                        {
-                            float my_ping = my_fighter->net.ping;
-                            float their_ping = play.fight->net.ping;
-
-                            float full_rtt_time = my_ping + their_ping;
-
-                            delt.delay_time_ms = full_rtt_time;
-
-                            lg::log("delaying by ", delt.delay_time_ms, "ms");
-                        }
-                        else
-                        {
-                            lg::log("Error, invalid fighter beginning delayed damage delta ", play.id);
-
-                            discovered_fighters.erase(id_who_hit_me);
-                        }
-
-                    }
-
-                    p.net.delayed_delt.push_back(delt);
-
-                    lg::log("Logging the start of a delayed delta from ", p.net.damage_info.id_hit_by);
-
-                    ///if two packets arrive at once, this will not work correctly
-                    my_fighter->last_hp_delta = p.net.damage_info.hp_delta;
-                    my_fighter->last_part_id = i;
-
-                    p.net.damage_info.hp_delta = 0.f;
-
-                    my_fighter->player_id_i_was_last_hit_by = p.net.damage_info.id_hit_by;
-
-                    //printf("You've been hit by, you've been struck by, player with id %i\n", my_fighter->player_id_i_was_last_hit_by);
-                }
-            }
-
             time_since_last_send.restart();
+
+            *net_nfight = network_backup;
         }
     }
 
@@ -945,6 +963,7 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
             continue;
         }
 
+        ///
         i.second.fight->construct_from_network_fighter(*i.second.net_fighter);
 
         ///for some reason, its respawning the other player a 2/3 parts dead
@@ -983,6 +1002,10 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
 
         i.second.fight->update_last_hit_id();
 
+        ///we're setting my fighters network recoil stuff, but it isnt being applied for some reason
+        ///probably due to the order of applying network models
+        ///so at this point, this fighter has had its net_fighter_copy thing updated with recoil request
+        ///if clientside parry
         i.second.fight->check_clientside_parry(discovered_fighters[my_id].fight);
 
         i.second.fight->network_update_render_positions();
@@ -1027,6 +1050,24 @@ void server_networking::update_fighter_name_infos()
 
         if(!i.second.fight->dead())
             i.second.fight->update_name_info(true);
+    }
+}
+
+void server_networking::update_fighter_gpu_name()
+{
+    for(auto& i : discovered_fighters)
+    {
+        if(i.first == my_id)
+            continue;
+
+        if(i.second.id < 0)
+        {
+            lg::log("super bad error, invalid fighter 2");
+            continue;
+        }
+
+        if(!i.second.fight->dead())
+            i.second.fight->update_gpu_name();
     }
 }
 

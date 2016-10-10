@@ -202,11 +202,16 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                 float angle = dot(t_look.norm(), -rotated_sword_dir.norm());
                 angle = acos(angle);
 
+                //printf("Tl %f %f %f\n", EXPAND_3(t_look));
+                //printf("rsd %f %f %f\n", EXPAND_3(rotated_sword_dir));
+
                 bool can_block = angle < block_half_angle && angle >= -block_half_angle;
 
                 ///if the sword has barely moved, assume we can block
                 ///this might cause problems for really slow backstabs
                 can_block |= sword_move_dir.length() < 0.0001f;
+
+                //printf("them can block %f\n", angle);
 
                 /*printf("them can block %i %f\n", can_block, angle);
 
@@ -252,7 +257,6 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                         else
                             text::add_random("Clang!", time);
                     }
-
 
                     ///If i'm the network client, this will do nothing for me
                     my_parent->recoil();

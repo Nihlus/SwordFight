@@ -52,6 +52,9 @@
 
 #include "ui_manager.hpp"
 
+#include "trombone_manager.hpp"
+
+#include "../openclrenderer/camera_effects.hpp"
 
 ///none of these affect the camera, so engine does not care about them
 ///assume main is blocking
@@ -87,6 +90,11 @@ void debug_controls(fighter* my_fight, engine& window)
     if(once<sf::Keyboard::V>())
     {
         my_fight->queue_attack(attacks::RECOIL);
+    }
+
+    if(once<sf::Keyboard::Z>())
+    {
+        my_fight->queue_attack(attacks::TROMBONE);
     }
 
     if(once<sf::Mouse::XButton1>())
@@ -160,6 +168,11 @@ void debug_controls(fighter* my_fight, engine& window)
     if(crouching)
         sprint = false;
 
+    if(sprint && walk_dir.v[0] < 0)
+    {
+        my_fight->queue_attack(attacks::SPRINT);
+    }
+
     if(my_fight->cube_info)
         walk_dir = my_fight->cube_info->transform_move_dir_no_rot(walk_dir);
 
@@ -170,7 +183,7 @@ void fps_controls(fighter* my_fight, engine& window)
 {
     sf::Keyboard key;
 
-    if(key.isKeyPressed(sf::Keyboard::Escape))
+    if(key.isKeyPressed(sf::Keyboard::F10))
         window.request_close();
 
     vec2f walk_dir = {0,0};
@@ -221,6 +234,11 @@ void fps_controls(fighter* my_fight, engine& window)
     if(once<sf::Mouse::XButton2>())
         my_fight->queue_attack(attacks::OVERHEAD_ALT);
 
+    if(once<sf::Keyboard::Z>())
+        my_fight->queue_attack(attacks::TROMBONE);
+
+    if(sprint && walk_dir.v[0] < 0)
+        my_fight->queue_attack(attacks::SPRINT);
 
     if(once<sf::Keyboard::Q>())
         my_fight->try_feint();
@@ -238,22 +256,111 @@ void fps_controls(fighter* my_fight, engine& window)
     m.v[0] = window.get_mouse_sens_adjusted_x();
     m.v[1] = window.get_mouse_sens_adjusted_y();
 
+    float source_m_yaw = 0.0003839723;
+
+    float yout = m.v[0] * source_m_yaw;
+
     ///ok, so this is essentially c_rot_keyboard_only
     ///ie local
     ///ie we give no fucks anymore because the mouse look scheme is fully consistent from local -> global
     ///ie we can ignore this, just apply the overall matrix rotation and offset to te position
     ///and etc
-    my_fight->set_rot_diff({0, -m.v[0] / 100.f, 0.f});
-
-    vec3f o_rot = xyz_to_vec(window.c_rot);
-
-    o_rot.v[1] = my_fight->rot.v[1];
-    o_rot.v[0] += m.v[1] / 200.f;
-
-    //window.set_camera_rot({o_rot.v[0], -o_rot.v[1] + M_PI, o_rot.v[2]});
+    my_fight->set_rot_diff({0, -yout, 0.f});
 }
 
-input_delta fps_camera_controls(float frametime, const input_delta& input, engine& window, const fighter* my_fight)
+pos_rot update_screenshake_camera(fighter* my_fight, cl_float4 c_pos, cl_float4 c_rot, float time_ms)
+{
+    static screenshake_effect effect;
+
+    pos_rot offset;
+
+    offset.rot = {0,0,0};
+
+    if(my_fight->reset_screenshake_flinch)
+    {
+        effect.init(200.f, 5.f, 1.f);
+
+        my_fight->reset_screenshake_flinch = false;
+    }
+
+    effect.tick(time_ms, c_pos, c_rot);
+
+    vec3f noffset = effect.get_offset();
+
+    offset.pos = noffset;
+
+    return offset;
+}
+
+void fps_trombone_controls(fighter* my_fight, engine& window, trombone_manager& trombone)
+{
+    sf::Keyboard key;
+
+    if(key.isKeyPressed(sf::Keyboard::F10))
+        window.request_close();
+
+    vec2f walk_dir = {0,0};
+
+    if(key.isKeyPressed(sf::Keyboard::W))
+        walk_dir.v[0] = -1;
+
+    if(key.isKeyPressed(sf::Keyboard::S))
+        walk_dir.v[0] = 1;
+
+    if(key.isKeyPressed(sf::Keyboard::A))
+        walk_dir.v[1] = -1;
+
+    if(key.isKeyPressed(sf::Keyboard::D))
+        walk_dir.v[1] = 1;
+
+    bool crouching = key.isKeyPressed(sf::Keyboard::LControl);
+
+    my_fight->crouch_tick(crouching);
+
+    bool sprint = key.isKeyPressed(sf::Keyboard::LShift);
+
+    if(crouching)
+        sprint = false;
+
+    if(my_fight->cube_info)
+        walk_dir = my_fight->cube_info->transform_move_dir_no_rot(walk_dir);
+
+    my_fight->walk_dir(walk_dir, sprint);
+
+    my_fight->update_headbob_if_sprinting(sprint);
+
+    if(once<sf::Mouse::Left>())
+        trombone.play(my_fight);
+
+    //if(once<sf::Keyboard::Z>())
+    my_fight->queue_attack(attacks::TROMBONE);
+
+    if(once<sf::Keyboard::Space>())
+        my_fight->try_jump();
+
+    ///this will probably break
+    my_fight->set_look({-window.c_rot_keyboard_only.s[0], window.get_mouse_sens_adjusted_x() / 1.f, 0});
+
+
+    vec2f m;
+    m.v[0] = window.get_mouse_sens_adjusted_x();
+    m.v[1] = window.get_mouse_sens_adjusted_y();
+
+    float source_m_yaw = 0.0003839723;
+
+    float yout = m.v[0] * source_m_yaw;
+
+    ///ok, so this is essentially c_rot_keyboard_only
+    ///ie local
+    ///ie we give no fucks anymore because the mouse look scheme is fully consistent from local -> global
+    ///ie we can ignore this, just apply the overall matrix rotation and offset to te position
+    ///and etc
+    my_fight->set_rot_diff({0, -yout, 0.f});
+
+    trombone.set_active(true);
+}
+
+input_delta fps_camera_controls(float frametime, const input_delta& input, engine& window, fighter* my_fight)
 {
     vec3f pos = (vec3f){0, my_fight->smoothed_crouch_offset, 0} + my_fight->pos + my_fight->camera_bob * my_fight->camera_bob_mult;
 
@@ -266,12 +373,21 @@ input_delta fps_camera_controls(float frametime, const input_delta& input, engin
     ///sigh. Do matrices
     vec3f o_rot = xyz_to_vec(input.c_rot_keyboard_only);
 
+    float source_m_yaw = 0.0003839723f;
+
+    float out = m.v[1] * source_m_yaw;
+
     o_rot.v[1] = my_fight->rot.v[1];
-    o_rot.v[0] += m.v[1] / 150.f;
+    //o_rot.v[0] += m.v[1] / 150.f;
+    o_rot.v[0] += out;
 
     //window.set_camera_rot({o_rot.v[0], -o_rot.v[1] + M_PI, o_rot.v[2]});
 
     cl_float4 c_rot = {o_rot.v[0], -o_rot.v[1] + M_PI, o_rot.v[2]};
+
+    pos_rot coffset = update_screenshake_camera(my_fight, c_pos, c_rot, frametime / 1000.f);
+
+    c_pos = sub(c_pos, (cl_float4){coffset.pos.v[0], coffset.pos.v[1], coffset.pos.v[2]});
 
     ///using c_rot_backup breaks everything, but its fine beacuse we're not needing to use this immutably
     return {sub(c_pos, input.c_pos), sub(c_rot, input.c_rot_keyboard_only), 0.f};
@@ -430,6 +546,8 @@ int main(int argc, char *argv[])
 
     lg::log("prebuild");
 
+    cube_effect::precache(500, context);
+
     context.build(true);
 
     lg::log("postbuild");
@@ -512,6 +630,9 @@ int main(int argc, char *argv[])
         lg::log(context.containers.size());
     }
 
+    fight.is_offline_client = true;
+    fight2.is_offline_client = true;
+
     fight.set_secondary_context(&transparency_context);
     fight2.set_secondary_context(&transparency_context);
 
@@ -550,6 +671,9 @@ int main(int argc, char *argv[])
     ui_manager ui_manage;
     ui_manage.init(s);
 
+    trombone_manager trombone_manage;
+    trombone_manage.init(&context);
+
     bool show_ftime = false;
 
     bool going = true;
@@ -558,6 +682,8 @@ int main(int argc, char *argv[])
     while(going)
     {
         sf::Clock c;
+
+        trombone_manage.set_active(false);
 
         bool in_menu = menu_handler.should_do_menu();
 
@@ -759,12 +885,20 @@ int main(int argc, char *argv[])
         {
             window.update_mouse();
         }
-        if(controls_state == 1 && window.focus && !in_menu)
+        if((controls_state == 1 || controls_state == 2) && window.focus && !in_menu)
         {
             window.update_mouse(window.width/2, window.height/2, true, true);
         }
 
-        if(once<sf::Keyboard::X>() && window.focus && !in_menu)
+        bool should_transition = false;
+        bool trombone_transition = false;
+
+        should_transition = once<sf::Keyboard::X>();
+        trombone_transition = once<sf::Keyboard::Num1>();
+
+        should_transition |= trombone_transition;
+
+        if(should_transition && window.focus && !in_menu)
         {
             controls_state = (controls_state + 1) % 2;
 
@@ -778,17 +912,27 @@ int main(int argc, char *argv[])
             //window.c_rot_keyboard_only = {0,0,0};
         }
 
+        if(trombone_transition)
+        {
+            if(controls_state < 2)
+                controls_state = 2;
+            else
+                controls_state = 1;
+        }
+
         if(controls_state == 0 && window.focus && !in_menu)
             debug_controls(my_fight, window);
         if(controls_state == 1 && window.focus && !in_menu)
             fps_controls(my_fight, window);
+        if(controls_state == 2 && window.focus && !in_menu)
+            fps_trombone_controls(my_fight, window, trombone_manage);
 
         control_input c_input;
 
         if(controls_state == 0)
             c_input = control_input();
 
-        if(controls_state == 1)
+        if(controls_state == 1 || controls_state == 2)
             c_input = control_input(std::bind(fps_camera_controls, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, my_fight),
                               process_controls_empty);
 
@@ -979,6 +1123,7 @@ int main(int argc, char *argv[])
 
         ///so that the listener position is exactly the body part
         my_fight->do_foot_sounds(true);
+        trombone_manage.tick(window, my_fight);
 
         sound::update_listeners();
 
@@ -1263,6 +1408,11 @@ int main(int argc, char *argv[])
             //window.draw_godrays(*cdat);
         }
 
+        fight.update_gpu_name();
+        fight2.update_gpu_name();
+        server.update_fighter_gpu_name();
+        window.window.resetGLStates();
+
         if(window.can_render())
         {
             //if(s.quality != 0)
@@ -1282,11 +1432,13 @@ int main(int argc, char *argv[])
 
             window.increase_render_events();
 
+            #ifdef FASTER_BUT_LESS_CONSISTENT
             window.set_render_event(event);
+            #endif
         }
 
-        context.build_tick();
-        transparency_context.build_tick();
+        context.build_tick(true);
+        transparency_context.build_tick(true);
 
         context.flip();
         transparency_context.flip();

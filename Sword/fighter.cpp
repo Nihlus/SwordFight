@@ -157,6 +157,19 @@ part::~part()
 void part::set_active(bool active)
 {
     model->set_active(active);
+    model->hide();
+
+    ///have to fix some of the network hodge-podgery first before this will work
+    ///as the active state of network fighters is overwritten by the model state
+    /*if(!model->isactive && active)
+    {
+        model->set_active(true);
+    }
+
+    if(model->isactive && !active)
+    {
+        model->hide();
+    }*/
 
     is_active = active;
 }
@@ -274,11 +287,19 @@ void part::set_quality(int _quality)
 ///the hp stat to the destination. This is probably acceptable
 
 ///temp error as this class needs gpu access
-void part::damage(float dam, bool do_effect, int32_t network_id_hit_by)
+void part::damage(fighter* parent, float dam, bool do_effect, int32_t network_id_hit_by)
 {
-    set_hp(hp - dam);
+    //set_hp(hp - dam);
 
-    net.damage_info.id_hit_by = network_id_hit_by;
+    //net.damage_info.id_hit_by = network_id_hit_by;
+
+    request_network_hp_delta(-dam, parent);
+
+    damage_info current_info = parent->net_fighter_copy->network_parts[type].requested_damage_info.networked_val;
+
+    current_info.id_hit_by = network_id_hit_by;
+
+    parent->net_fighter_copy->network_parts[type].requested_damage_info.set_transmit_val(current_info);
 
     if(is_active && hp < 0.0001f)
     {
@@ -288,7 +309,17 @@ void part::damage(float dam, bool do_effect, int32_t network_id_hit_by)
     ///so, lets do this elsewhere
 }
 
-#include <vec/vec.hpp>
+///so delta gets reset to 0 post networking, ie per frame
+void part::request_network_hp_delta(float delta, fighter* parent)
+{
+    network_part_info& net_p = parent->net_fighter_copy->network_parts[type];
+
+    damage_info current_info = parent->net_fighter_copy->network_parts[type].requested_damage_info.networked_val;
+
+    current_info.hp_delta = delta;
+
+    parent->net_fighter_copy->network_parts[type].requested_damage_info.set_transmit_val(current_info);
+}
 
 void part::update_texture_by_hp()
 {
@@ -351,6 +382,8 @@ void part::update_texture_by_hp()
 
 void part::perform_death(bool do_effect)
 {
+    //printf("%f hp %i isactive\n", hp, is_active);
+
     if(do_effect)
     {
         cube_effect e;
@@ -362,8 +395,8 @@ void part::perform_death(bool do_effect)
     set_active(false);
     obj()->hide();
 
-    cpu_context->load_active();
-    cpu_context->build_request();
+    //cpu_context->load_active();
+    //cpu_context->build_request();
 
     lg::log("Perform death");
 }
@@ -374,14 +407,15 @@ void part::set_hp(float h)
 
     hp = h;
 
-    network_hp(delta);
+    //network_hp(delta);
 }
 
-void part::network_hp(float delta)
+
+/*void part::network_hp(float delta)
 {
     net.hp_dirty = true;
     net.damage_info.hp_delta += delta;
-}
+}*/
 
 bool part::alive()
 {
@@ -510,6 +544,7 @@ sword::sword(object_context& cpu)
     model->set_pos({0, 0, -100});
     dir = {0,0,0};
     model->set_file("./Res/sword_red.obj");
+    //model->set_file("./Res/trombone_cutdown_nomod.obj");
     team = -1;
 }
 
@@ -633,6 +668,14 @@ fighter::~fighter()
 
 void fighter::load()
 {
+    sprint_frac = 0.f;
+
+    is_sprinting = false;
+
+    rand_offset_ms = randf_s(0.f, 991.f);
+
+    gpu_name_dirty = 0;
+
     last_walk_dir = {0,0};
 
     last_walk_dir_diff = {0,0};
@@ -759,13 +802,16 @@ void fighter::die()
     }
 
     weapon.model->set_active(false);
+    weapon.model->hide();
 
     for(auto& i : joint_links)
     {
         i.obj->set_active(false);
+        i.obj->hide();
     }
 
     cosmetic.set_active(false);
+    cosmetic.tophat->hide();
 
     const float death_time = 2000;
 
@@ -811,7 +857,7 @@ void fighter::die()
 
     cpu_context->build_request();
 
-    lg::log("Die");
+    //lg::log("Die");
 
     ///pipe out hp here, just to check
 }
@@ -1382,7 +1428,7 @@ void fighter::tick(bool is_player)
                     fighter* their_parent = phys->bodies[i.hit_id].parent;
 
                     ///this is the only time damage is applied to anything, ever
-                    their_parent->damage((bodypart_t)(i.hit_id % COUNT), i.damage, this->network_id);
+                    their_parent->damage((bodypart_t)(i.hit_id % COUNT), i.damage, this->network_id, this->is_offline_client && their_parent->is_offline_client);
 
                     ///this is where the networking fighters get killed
                     ///this is no longer true, may happen here or in server_networking
@@ -1403,7 +1449,9 @@ void fighter::tick(bool is_player)
 
     for(auto it = moves.begin(); it != moves.end();)
     {
-        if(it->finished())
+        ///if we've finished and we're not a continuous action, erase
+        ///if we're a continuous action and we haven't been set this frame, terminate
+        if((it->finished() && !it->does(mov::CONTINUOUS_SPRINT)) || (it->does(mov::CONTINUOUS_SPRINT) && !it->was_set_this_frame))
         {
             action_map.erase(it->limb);
 
@@ -1411,6 +1459,14 @@ void fighter::tick(bool is_player)
         }
         else
             it++;
+    }
+
+    for(auto& i : moves)
+    {
+        if(i.does(mov::CONTINUOUS_SPRINT))
+        {
+            i.was_set_this_frame = 0;
+        }
     }
 
     vec3f jump_displacement = jump_info.get_relative_jump_displacement_tick(frametime, this);
@@ -1442,7 +1498,16 @@ void fighter::tick(bool is_player)
 
 
     IK_hand(0, rot_focus, shoulder_rotation, arms_are_locked);
-    IK_hand(1, parts[LHAND].pos, shoulder_rotation, arms_are_locked, true);
+
+    if(!rhand_overridden)
+        IK_hand(1, parts[LHAND].pos, shoulder_rotation, arms_are_locked, true);
+    else
+    {
+        IK_hand(1, rhand_override_pos, shoulder_rotation, arms_are_locked, true);
+
+        parts[RHAND].set_global_pos(rhand_override_pos);
+        parts[RHAND].update_model();
+    }
 
     vec3f slave_to_master = parts[LHAND].pos - parts[RHAND].pos;
 
@@ -1450,11 +1515,10 @@ void fighter::tick(bool is_player)
     ///dynamically from the focus position
     ///this means it probably wants to be part of our IK step?
     ///hands disconnected
-    if(slave_to_master.length() > 1.f)
+    if(slave_to_master.length() > 1.f && !rhand_overridden)
     {
         parts[RHAND].pos = parts[LHAND].pos;
     }
-
 
     ///sword render stuff updated here
     update_sword_rot();
@@ -1495,6 +1559,8 @@ void fighter::tick(bool is_player)
     ///rip
     checked_death();
     manual_check_part_death();
+
+    rhand_overridden = false;
 }
 
 ///conflicts with manual check part alive
@@ -1669,13 +1735,27 @@ void fighter::walk_dir(vec2f dir, bool sprint)
 
     float h = 120.f;
 
+    is_sprinting = false;
+
     if(dir.v[0] == -1 && sprint)
     {
-        time_elapsed *= fighter_stats::sprint_speed;
+        sprint_frac += time_elapsed / bodypart::sprint_acceleration_time_ms;
+
+        sprint_frac = clamp(sprint_frac, 0.f, 1.f);
+
+        time_elapsed = time_elapsed + time_elapsed * (fighter_stats::sprint_speed - 1) * sprint_frac;
         h *= 1.2f;
 
-        jump_info.last_speed *= fighter_stats::sprint_speed;
+        jump_info.last_speed = fighter_stats::speed + (fighter_stats::speed - 1.f) * fighter_stats::sprint_speed * sprint_frac;
+
+        is_sprinting = true;
     }
+    else
+    {
+        sprint_frac -= time_elapsed / bodypart::sprint_acceleration_time_ms;
+    }
+
+    sprint_frac = clamp(sprint_frac, 0.f, 1.f);
 
     float dist = 125.f;
 
@@ -1987,6 +2067,9 @@ bool fighter::can_attack(bodypart_t type)
 
         if(moves[i].limb == type)
             any_queued = i;
+
+        if(moves[i].limb && moves[i].does(mov::NO_POST_QUEUE))
+            return false;
     }
 
     ///nothing going, we can queue attack
@@ -2011,6 +2094,19 @@ bool fighter::can_attack(bodypart_t type)
     return false;
 }
 
+movement* fighter::get_current_move(bodypart_t type)
+{
+    for(int i=0; i < moves.size(); i++)
+    {
+        if(moves[i].limb == type && moves[i].going)
+        {
+            return &moves[i];
+        }
+    }
+
+    return nullptr;
+}
+
 ///this function assumes that an attack movelist keeps a consistent bodypart
 void fighter::queue_attack(attack_t type)
 {
@@ -2020,12 +2116,23 @@ void fighter::queue_attack(attack_t type)
     attack a = attack_list[type];
 
     if(a.moves.size() > 0 && !can_attack(a.moves.front().limb))
+    {
+        movement* cmove = get_current_move(a.moves.front().limb);
+
+        if(cmove && cmove->does(mov::CONTINUOUS_SPRINT))
+        {
+            cmove->was_set_this_frame = 1;
+        }
+
         return;
+    }
 
     for(auto i : a.moves)
     {
         ///this is probably a mistake to initialise this here
         i.damage = attacks::damage_amounts[type];
+
+        i.was_set_this_frame = 1;
 
         add_move(i);
     }
@@ -2117,7 +2224,7 @@ void fighter::set_rot_diff(vec3f diff)
         if(!i.going)
             continue;
 
-        if(i.does(mov::DAMAGING) || i.does(mov::WINDUP))
+        if((i.does(mov::DAMAGING) || i.does(mov::WINDUP)) && !i.does(mov::NO_CAMERA_LIMIT))
         {
             yangle_diff = clamp(yangle_diff, -max_angle_while_damaging, max_angle_while_damaging);
         }
@@ -2234,8 +2341,26 @@ void fighter::update_render_positions()
     foot_heights[1] = l_bob * 0.3 + r_bob * 0.7;
     foot_heights[2] = (foot_heights[0] + foot_heights[1]) / 2.f;
 
-    for(part& i : parts)
+    std::map<int, float> foot_displacements;
+
+    float l_f = parts[LFOOT].pos.v[2] - rest_positions[LFOOT].v[2];
+    float r_f = parts[RFOOT].pos.v[2] - rest_positions[RFOOT].v[2];
+
+    foot_displacements[0] = l_f;
+    foot_displacements[1] = r_f;
+    foot_displacements[2] = (l_f + r_f) / 2.f;
+
+    //for(part& i : parts)
+    for(int kk=0; kk<parts.size(); kk++)
     {
+        part& i = parts[kk];
+
+        /*if(kk == RHAND && rhand_overridden)
+        {
+            rhand_overridden = false;
+            continue;
+        }*/
+
         vec3f t_pos = i.pos;
 
         t_pos.v[1] += foot_heights[which_side[i.type]] * foot_modifiers[i.type] * overall_bob_modifier;
@@ -2247,6 +2372,14 @@ void fighter::update_render_positions()
         float twist_extra = shoulder_rotation * waggle_modifiers[i.type];
 
         t_pos = t_pos.rot({0,0,0}, {0, twist_extra, 0});
+
+        //if(is_sprinting)
+        float zsprint = foot_displacements[which_side[i.type]] * forward_thrust_hip_relative[i.type] * overall_forward_thrust_mod;
+        float znsprint = foot_displacements[which_side[i.type]] * forward_thrust_hip_relative[i.type] * overall_forward_thrust_mod_nonsprint;
+
+        float zextra = zsprint * sprint_frac + znsprint * (1.f - sprint_frac);
+
+        t_pos.v[2] += zextra;
 
         auto r = to_world_space(pos, rot, t_pos, i.rot);
 
@@ -2305,6 +2438,7 @@ void fighter::update_render_positions()
 
     auto r = to_world_space(pos, rot, weapon.pos, weapon.rot);
 
+
     weapon.model->set_pos({r.pos.v[0], r.pos.v[1], r.pos.v[2]});
     weapon.model->set_rot({r.rot.v[0], r.rot.v[1], r.rot.v[2]});
 
@@ -2357,7 +2491,7 @@ void fighter::update_headbob_if_sprinting(bool sprinting)
 {
     float dir = sprinting ? 1 : -1;
 
-    if(last_walk_dir.v[1] >= 0)
+    if(last_walk_dir.v[0] >= 0)
         dir = -1;
 
     float modif = 100.f;
@@ -2505,25 +2639,34 @@ void fighter::respawn_if_appropriate()
 
             ///hack to stop it from networking the hp change
             ///from respawning the network fighter
-            for(auto& i : parts)
+            ///I think we no longer need to do this
+            ///we probably want to clear any delayed deltas etc
+            ///although the respawn time means its probably not applicable
+            /*for(auto& i : parts)
             {
                 i.net.damage_info.hp_delta = 0.f;
                 i.net.hp_dirty = false;
-            }
+            }*/
+
+
 
             //printf("respawning other playern\n");
         }
     }
 }
 
-///net-fighters ONLY
-void fighter::overwrite_parts_from_model()
+void fighter::save_old_pos()
 {
     for(int i=0; i<bodyparts::bodypart::COUNT; i++)
     {
-        old_pos[i] = parts[i].global_pos;
+        if(parts[i].global_pos != old_pos[i])
+            old_pos[i] = parts[i].global_pos;
     }
+}
 
+///net-fighters ONLY
+void fighter::overwrite_parts_from_model()
+{
     for(part& i : parts)
     {
         cl_float4 pos = i.obj()->pos;
@@ -2567,16 +2710,23 @@ void fighter::update_last_hit_id()
 {
     int32_t last_id = -1;
 
-    for(auto& i : parts)
+    //for(auto& i : parts)
+    for(int ii=0; ii<parts.size(); ii++)
     {
-        if(i.net.damage_info.hp_delta != 0.f)
+        part& local_part = parts[ii];
+        network_part_info& net_part = net_fighter_copy->network_parts[ii];
+
+        damage_info& dinfo = net_part.requested_damage_info.networked_val;
+
+        //if(i.net.damage_info.hp_delta != 0.f)
+        if(dinfo.hp_delta != 0)
         {
             //i.net.damage_info.hp_delta = 0.f;
 
             if(last_id != -1)
                 lg::log("potential conflict in last id hit, update_last_hit_id()");
 
-            if(i.net.damage_info.id_hit_by == -1)
+            if(dinfo.id_hit_by == -1)
             {
                 ///continue
                 ///but this might be broken currently
@@ -2588,7 +2738,7 @@ void fighter::update_last_hit_id()
                 continue;
             }
 
-            last_id = i.net.damage_info.id_hit_by;
+            last_id = dinfo.id_hit_by;
 
             player_id_i_was_last_hit_by = last_id;
 
@@ -2597,7 +2747,8 @@ void fighter::update_last_hit_id()
     }
 }
 
-///
+///we need to check the case where i've definitely been stabbed on my game
+///check if this fighter has hit the non networked fighter
 void fighter::check_clientside_parry(fighter* non_networked_fighter)
 {
     if(net.is_damaging)
@@ -2605,6 +2756,8 @@ void fighter::check_clientside_parry(fighter* non_networked_fighter)
         //printf("we're damaging network\n");
 
         vec3f move_dir = parts[bodyparts::bodypart::LHAND].global_pos - old_pos[bodyparts::bodypart::LHAND];
+
+        //printf("MD %f %f %f\n", EXPAND_3(move_dir));
 
         ///this is currently checking clientside parries against all players, whereas we only want to check
         ///this networked fighter against the local player
@@ -2634,13 +2787,19 @@ void fighter::check_clientside_parry(fighter* non_networked_fighter)
     }
 }
 
+///this is on my client
+///we need to recoil the hitter client
 void fighter::process_delayed_deltas()
 {
-    for(auto& i : parts)
+    //for(auto& i : parts)
+    for(int kk=0; kk<parts.size(); kk++)
     {
-        for(int j=0; j<i.net.delayed_delt.size(); j++)
+        part& local_part = parts[kk];
+        //network_part_info& net_part = net_fighter_copy->network_parts[kk];
+
+        for(int j=0; j<local_part.net.delayed_delt.size(); j++)
         {
-            delayed_delta& delt = i.net.delayed_delt[j];
+            delayed_delta& delt = local_part.net.delayed_delt[j];
 
             float RTT = delt.delay_time_ms;
 
@@ -2650,6 +2809,8 @@ void fighter::process_delayed_deltas()
             if(delt.clk.getElapsedTime().asMicroseconds() / 1000.f >= half_time)
             {
                 lg::log("Processing delayed hit with RTT/2 ", half_time, " and time clock ", delt.clk.getElapsedTime().asMicroseconds() / 1000.f);
+
+                lg::log("Damage ", delt.delayed_info.hp_delta);
 
                 bool apply_damage = true;
 
@@ -2667,7 +2828,8 @@ void fighter::process_delayed_deltas()
 
                 if(apply_damage)
                 {
-                    i.hp += delt.delayed_info.hp_delta;
+                    local_part.hp += delt.delayed_info.hp_delta;
+                    //net_part.hp += delt.delayed_info.hp_delta;
 
                     ///hmm, so this is delayed
                     ///so flinch will apply after the ping delay
@@ -2680,7 +2842,7 @@ void fighter::process_delayed_deltas()
                     lg::log("Did not apply delayed damage due to client parry");
                 }
 
-                i.net.delayed_delt.erase(i.net.delayed_delt.begin() + j);
+                local_part.net.delayed_delt.erase(local_part.net.delayed_delt.begin() + j);
                 j--;
             }
         }
@@ -2712,11 +2874,28 @@ void fighter::eliminate_clientside_parry_invulnerability_damage()
 
             ///set i.local.play_hit_audio to false
             ///but ignore that for the moment, useful for testing
-            if(inf.player_id_i_parried == p.net.damage_info.id_hit_by)
+            ///uuh. We really need to stash hp deltas into an array of damage_infos
+            ///and then check and apply them later
+            ///atm this might break any damage received in a parry window + RTT/2, which is unacceptable
+            /*if(inf.player_id_i_parried == p.net.damage_info.id_hit_by)
             {
                 p.net.damage_info.hp_delta = 0.f;
 
                 lg::log("eliminated hit damage due to clientside parry from playerid ", p.net.damage_info.id_hit_by);
+            }*/
+
+            ///current part is part[i]
+            for(int kk=0; kk<p.net.delayed_delt.size(); kk++)
+            {
+                if(p.net.delayed_delt[kk].delayed_info.id_hit_by == inf.player_id_i_parried)
+                {
+                    p.net.delayed_delt.erase(p.net.delayed_delt.begin() + kk);
+                    kk--;
+
+                    lg::log("eliminated hit damage due to clientside parry from playerid ", inf.player_id_i_parried);
+
+                    continue;
+                }
             }
         }
     }
@@ -2731,6 +2910,14 @@ void fighter::set_network_id(int32_t net_id)
 void fighter::save_network_representation(network_fighter& net_fight)
 {
     *net_fighter_copy = net_fight;
+
+    for(int i=0; i<bodypart::COUNT; i++)
+    {
+        net_fighter_copy->network_parts[i].requested_damage_info.update_internal();
+    }
+
+    net_fighter_copy->network_fighter_inf.recoil_forced.update_internal();
+    net_fighter_copy->network_fighter_inf.recoil_requested.update_internal();
 }
 
 ///remember, we have to copy my values into the other struct before we can send them!
@@ -2740,6 +2927,7 @@ network_fighter fighter::get_modified_network_fighter()
 }
 
 ///me to my network representation
+///this doesnt include hp deltas
 network_fighter fighter::construct_network_fighter()
 {
     network_fighter ret;
@@ -2789,6 +2977,8 @@ network_fighter fighter::construct_network_fighter()
 ///to replace?
 void fighter::construct_from_network_fighter(network_fighter& net_fight)
 {
+    save_old_pos();
+
     ///we'll need to construct quite a few of these into net. for the time being, including name
     for(int i=0; i<bodyparts::bodypart::COUNT; i++)
     {
@@ -2799,6 +2989,9 @@ void fighter::construct_from_network_fighter(network_fighter& net_fight)
         parts[i].hp = current.hp;
 
         parts[i].update_model();
+
+        ///reset the to_send, reset internal values to either network, or 0
+        net_fight.network_parts[i].requested_damage_info.update_internal();
     }
 
     network_sword_info& sword_info = net_fight.network_sword;
@@ -2841,6 +3034,11 @@ void fighter::modify_existing_network_fighter_with_local(network_fighter& net_fi
 {
     net_fight.network_fighter_inf.recoil_forced = net_fighter_copy->network_fighter_inf.recoil_forced;
     net_fight.network_fighter_inf.recoil_requested = net_fighter_copy->network_fighter_inf.recoil_requested;
+
+    for(int i=0; i<parts.size(); i++)
+    {
+        net_fight.network_parts[i].requested_damage_info = net_fighter_copy->network_parts[i].requested_damage_info;
+    }
 }
 
 void fighter::set_team(int _team)
@@ -2989,15 +3187,26 @@ void fighter::try_feint()
     }
 }
 
+void fighter::override_rhand_pos(vec3f global_position)
+{
+    rhand_overridden = true;
+    rhand_override_pos = global_position;
+}
 
 ///i've taken damage. If im during the windup phase of an attack, recoil
-void fighter::damage(bodypart_t type, float d, int32_t network_id_hit_by)
+void fighter::damage(bodypart_t type, float d, int32_t network_id_hit_by, bool hit_by_offline_client)
 {
     using namespace bodyparts;
 
     bool do_explode_effect = num_dead() < num_needed_to_die() - 1;
 
-    parts[type].damage(d, do_explode_effect, network_id_hit_by);
+    parts[type].damage(this, d, do_explode_effect, network_id_hit_by);
+
+    if(hit_by_offline_client)
+    {
+        parts[type].set_hp(parts[type].hp - d);
+        flinch(fighter_stats::flinch_time_ms);
+    }
 
     lg::log("network hit id", network_id_hit_by);
 
@@ -3010,9 +3219,10 @@ void fighter::damage(bodypart_t type, float d, int32_t network_id_hit_by)
     //net.recoil_dirty = true;
 }
 
+///implement camera shake effect here
 void fighter::flinch(float time_ms)
 {
-
+    reset_screenshake_flinch = true;
 }
 
 void fighter::set_contexts(object_context* _cpu, object_context_data* _gpu)
@@ -3046,12 +3256,29 @@ void fighter::set_name(std::string name)
 
     name_tex.display();
 
+    name_tex.setActive(false);
+
+    gpu_name_dirty = 0;
+}
+
+void fighter::update_gpu_name()
+{
+    if(!name_tex_gpu)
+        return;
+
+    if(gpu_name_dirty >= 1)
+        return;
+
+    name_tex.setActive(true);
+
     name_tex_gpu->update_gpu_texture(name_tex.getTexture(), transparency_context->fetch()->tex_gpu_ctx, false, cl::cqueue2);
     name_tex_gpu->update_gpu_mipmaps(transparency_context->fetch()->tex_gpu_ctx, cl::cqueue2);
 
     cl::cqueue2.flush();
 
     name_tex.setActive(false);
+
+    gpu_name_dirty++;
 }
 
 void fighter::set_secondary_context(object_context* _transparency_context)
@@ -3109,7 +3336,7 @@ void fighter::update_name_info(bool networked_fighter)
     if(!name_tex_gpu)
         return;
 
-    if(name_reset_timer.getElapsedTime().asMilliseconds() > 1000.f || !name_info_initialised)
+    if(name_reset_timer.getElapsedTime().asMilliseconds() > (4000.f + rand_offset_ms) || !name_info_initialised)
     {
         ///we've got the correct local name, but it wont blit for some reason
         std::string str = local_name;
