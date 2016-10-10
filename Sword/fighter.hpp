@@ -581,12 +581,12 @@ static std::vector<movement> sprint
 {
     ///for gameplay balance a camera limit is probably good
     ///but to be honest its fairly horrible to play with, you should be able to freely sprint and look
-    {0, {100, -200, -100}, 200, 0, bodypart::LHAND, (movement_t)(mov::CONTINUOUS_SPRINT | mov::NO_POST_QUEUE | mov::NO_CAMERA_LIMIT)}
+    {0, {100, -200, -100}, 200, 0, bodyparts::LHAND, (movement_t)(mov::CONTINUOUS_SPRINT | mov::NO_POST_QUEUE | mov::NO_CAMERA_LIMIT)}
 };
 
 static std::vector<movement> trombone_hold
 {
-    {0, {-50, -50, -100}, 200, 0, bodypart::LHAND, mov::ORIENT_TOWARDS_FACE}
+    {0, {-50, -50, -100}, 200, 0, bodyparts::LHAND, mov::ORIENT_TOWARDS_FACE}
 };
 
 ///?

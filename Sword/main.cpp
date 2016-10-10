@@ -47,14 +47,12 @@
 #include <my_myo/my_myo.hpp>
 #endif
 
-#include "../imgui/imgui.h"
-#include "../imgui-sfml/imgui-SFML.h"
+#include "imgui/imgui.h"
+#include "imgui-sfml/imgui-SFML.h"
 
 #include "ui_manager.hpp"
-
 #include "trombone_manager.hpp"
-
-#include "../openclrenderer/camera_effects.hpp"
+#include "OpenCLRenderer/camera_effects.hpp"
 
 ///none of these affect the camera, so engine does not care about them
 ///assume main is blocking

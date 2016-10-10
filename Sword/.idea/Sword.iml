@@ -11,7 +11,9 @@
       <sourceFolder url="file://$MODULE_DIR$/object_cube.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ui_manager.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/particle_effect.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server_networking.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/trombone_manager.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ui_manager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/text.hpp" isTestSource="false" />
@@ -26,9 +28,9 @@
       <sourceFolder url="file://$MODULE_DIR$/sound.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/menu.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cape.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/sound.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/trombone_manager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/sound.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/map_tools.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/menu.hpp" isTestSource="false" />
@@ -139,13 +141,13 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5.4.0/include" />
+          <root url="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$MODULE_DIR$/../lib" />
         </CLASSES>
         <SOURCES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5.4.0/include" />
+          <root url="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
           <root url="file://$MODULE_DIR$/../lib" />

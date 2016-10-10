@@ -1739,7 +1739,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
 
     if(dir.v[0] == -1 && sprint)
     {
-        sprint_frac += time_elapsed / bodypart::sprint_acceleration_time_ms;
+        sprint_frac += time_elapsed / bodyparts::sprint_acceleration_time_ms;
 
         sprint_frac = clamp(sprint_frac, 0.f, 1.f);
 
@@ -1752,7 +1752,7 @@ void fighter::walk_dir(vec2f dir, bool sprint)
     }
     else
     {
-        sprint_frac -= time_elapsed / bodypart::sprint_acceleration_time_ms;
+        sprint_frac -= time_elapsed / bodyparts::sprint_acceleration_time_ms;
     }
 
     sprint_frac = clamp(sprint_frac, 0.f, 1.f);
@@ -2911,7 +2911,7 @@ void fighter::save_network_representation(network_fighter& net_fight)
 {
     *net_fighter_copy = net_fight;
 
-    for(int i=0; i<bodypart::COUNT; i++)
+    for(int i=0; i<bodyparts::COUNT; i++)
     {
         net_fighter_copy->network_parts[i].requested_damage_info.update_internal();
     }

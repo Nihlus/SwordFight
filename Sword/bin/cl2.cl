@@ -1393,7 +1393,29 @@ int ret_cubeface(float3 point, float3 light)
         }
     };*/
 
-    float3 r_pl = point - light;
+    float3 rel = point - light;
+
+    float3 arel = fabs(rel);
+
+    if(arel.x >= arel.y && arel.x >= arel.z)
+    {
+        return rel.x < 0 ? 4 : 5;
+    }
+
+    if(arel.y > arel.x && arel.y >= arel.z)
+    {
+        return rel.y < 0 ? 1 : 3;
+    }
+
+    if(arel.z > arel.x && arel.z > arel.y)
+    {
+        if(rel.z < 0)
+            return 2;
+    }
+
+    return 0;
+
+    /*float3 r_pl = point - light;
 
     float angle = atan2(r_pl.y, r_pl.x);
 
@@ -1447,7 +1469,7 @@ int ret_cubeface(float3 point, float3 light)
         return 4;
     }
 
-    return 2;
+    return 2;*/
 }
 
 __kernel

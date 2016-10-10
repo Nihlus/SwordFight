@@ -32,7 +32,8 @@ set(SWORD_SOURCES
 		${PROJECT_SOURCE_DIR}/server_networking.cpp
 		${PROJECT_SOURCE_DIR}/sound.cpp
 		${PROJECT_SOURCE_DIR}/ui_manager.cpp
-		${PROJECT_SOURCE_DIR}/text.cpp)
+		${PROJECT_SOURCE_DIR}/text.cpp
+		${PROJECT_SOURCE_DIR}/trombone_manager.cpp)
 
 set(SWORD_HEADERS
 		${PROJECT_SOURCE_DIR}/bbox.hpp
@@ -51,7 +52,8 @@ set(SWORD_HEADERS
 		${PROJECT_SOURCE_DIR}/sound.hpp
 		${PROJECT_SOURCE_DIR}/text.hpp
 		${PROJECT_SOURCE_DIR}/ui_manager.hpp
-		${PROJECT_SOURCE_DIR}/util.hpp)
+		${PROJECT_SOURCE_DIR}/util.hpp
+		${PROJECT_SOURCE_DIR}/trombone_manager.hpp)
 
 set(RENDERER_SOURCES
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/Galaxy/galaxy.cpp
