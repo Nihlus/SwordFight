@@ -77,6 +77,13 @@ struct obj_g_descriptor
     float4 world_pos;   ///w is 0
     float4 world_rot;   ///w is 0
     float4 world_rot_quat;
+
+    ///motion blur
+    float4 old_world_pos_1;
+    float4 old_world_pos_2;
+    float4 old_world_rot_quat_1;
+    float4 old_world_rot_quat_2;
+
     float scale;
     uint tid;           ///texture id
     uint rid;           ///normal map id
@@ -2110,6 +2117,8 @@ __kernel void do_outline(int g_id, __global uint* depth_buffer, __write_only ima
 ///so we can offset an objects position in the light buffer (per-vertex) by that much in the bilinear interpolation
 ///so shadow texels are no longer on a grid
 ///each shadow light could have a tag for objects?
+///we can easily optimise this by taking the longest cardinal direction from the center
+///that immediately gives us the face in an extremely optimised way
 float generate_hard_occlusion(float2 spos, float3 lpos, float3 normal, float3 position_to_light, __global uint* light_depth_buffer, int which_cubeface, float3 back_rotated, int shnum)
 {
     const float3 r_struct[6] =
@@ -4750,13 +4759,16 @@ float2 decode_vt(uint vt)
 ///rewrite using the raytracers triangle bits
 ///change to 1d
 ///write an outline shader?
+///frame id is not important, its just useful for syncing motion blur writes
+///it just needs to increase, if it jumps then there'll be an artifact in the motion blur
+///could also be used for half pixel jitter etc
 __kernel
 __attribute__((reqd_work_group_size(DIM_KERNEL3, DIM_KERNEL3, 1)))
 //__attribute__((vec_type_hint(float3)))
-void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __global uint* depth_buffer, __read_only image2d_t id_buffer,
+void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, float4 c_pos_old, float4 c_rot_old, __global uint* depth_buffer, __read_only image2d_t id_buffer,
            image_3d_read array, __write_only image2d_t screen, __global uint *nums, __global uint *sizes, __global struct obj_g_descriptor* gobj,
            __global uint* lnum, __global struct light* lights, __global uint* light_depth_buffer, __global uint * to_clear, __global uint* fragment_id_buffer, __global float4* cutdown_tris,
-           float4 screen_clear_colour
+           float4 screen_clear_colour, uint frame_id
            )
 
 ///__global uint sacrifice_children_to_argument_god
@@ -4822,6 +4834,7 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
     //int o_id = T->vertices[0].object_id;
 
     __global struct obj_g_descriptor *G = &gobj[o_id];
+
     ///getting anything from G involves waiting hideously for so many properties to come through
     ///this is probably a massive cause of slowdown, gpus are not good for this, its essentially a shit
     ///linked list
@@ -4844,6 +4857,7 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
 
     global_position += camera_pos;
 
+    ///this is scaled, so we don't have to unscale this as p123 are scaled as well
     float3 object_local = global_position - G->world_pos.xyz;
     object_local = back_rot_quat(object_local, G->world_rot_quat);
 
@@ -4929,6 +4943,8 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
 
     ///mip_start is a global parameter, edit it out
     float4 col = texture_filter_diff(vt, vtdiff, gobj[o_id].tid, gobj[o_id].mip_start, nums, sizes, array);
+
+    //col = pow(col, 2.2f);
 
     uint seed1 = wang_hash(x + y*SCREENWIDTH*SCREENHEIGHT);
     uint seed2 = rand_xorshift(seed1);
@@ -5070,9 +5086,13 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
 
         distance_modifier *= distance_modifier;
 
+        float3 light_col = l.col.xyz;
+
+        //light_col = pow(light_col, 2.2f);
+
         ///for the moment, im abusing diffuse to mean both ambient and diffuse
         ///yes it is bad
-        ambient_sum += l.col.xyz * (ambient * distance_modifier * l.brightness * l.diffuse * G->diffuse);
+        ambient_sum += light_col * (ambient * distance_modifier * l.brightness * l.diffuse * G->diffuse);
 
         ///this is madness. no, this is SPARTA. This expression is slightly slower than the one above
         ///I guess this is not the use case for mad
@@ -5125,7 +5145,7 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
 
         float diffuse = (1.0f-ambient)*light;
 
-        diffuse_sum += diffuse*l.col.xyz*l.brightness * l.diffuse * G->diffuse;
+        diffuse_sum += light_col * (diffuse * l.brightness * l.diffuse * G->diffuse);
 
         float3 H = fast_normalize(l2p + l2c);
         float3 N = normal; ///dont use randomised normal because specular can vary intensly with small pertubations of normal
@@ -5139,7 +5159,7 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
 
         float spec = mdot(H, N);
         spec = pow(spec, G->specular);
-        specular_sum += spec * l.col.xyz * kS * l.brightness * distance_modifier * G->spec_mult;
+        specular_sum += spec * light_col * kS * l.brightness * distance_modifier * G->spec_mult;
 
         #else
         const float kS = 0.4f;
@@ -5177,7 +5197,7 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
         float spec = native_divide(fresnel * microfacet * geometric, (M_PI * ndv));
         //float spec = native_divide(fresnel * microfacet * geometric, (M_PI * ndl * ndv));
 
-        specular_sum += l.col.xyz * (spec * kS * l.brightness * distance_modifier) * G->spec_mult;
+        specular_sum += light_col * (spec * kS * l.brightness * distance_modifier) * G->spec_mult;
 
         specular_sum = max(specular_sum, 0.f);
         #endif
@@ -5189,17 +5209,19 @@ void kernel3(__global struct triangle *triangles, float4 c_pos, float4 c_rot, __
     diffuse_sum += ambient_sum;
 
     //diffuse_sum = clamp(diffuse_sum, 0.0f, 1.0f);
-    specular_sum = clamp(specular_sum, 0.0f, 1.0f);
+    //specular_sum = clamp(specular_sum, 0.0f, 1.0f);
     int2 scoord = {x, y};
 
     float reflected_surface_colour = 0.7f;
 
     float3 colclamp = col.xyz + mandatory_light + specular_sum * reflected_surface_colour;
 
-    colclamp = clamp(colclamp, 0.0f, 1.0f);
+    //colclamp = clamp(colclamp, 0.0f, 1.0f);
 
 
     float3 final_col = mad(colclamp, diffuse_sum, specular_sum * (1.f - reflected_surface_colour));
+
+    //final_col = pow(final_col, 1.f/2.2f);
 
     //#define OUTLINE
     #ifdef OUTLINE
@@ -5509,6 +5531,154 @@ void do_pseudo_aa_outline(__read_only AUTOMATIC(image2d_t, id_buffer), __global 
     c3 = 0;
 
     write_imagef(screen, (int2){x, y}, (c1 + c2 + c3)/3.f);
+}
+
+__kernel
+void do_motion_blur(__read_only AUTOMATIC(image2d_t, id_buffer), __global AUTOMATIC(uint*, fragment_id_buffer),
+                  __read_only image2d_t in_screen, __write_only image2d_t back_screen,
+                  __global AUTOMATIC(float4*, cutdown_tris), __global AUTOMATIC(uint*, depth_buffer),
+                    __global AUTOMATIC(struct obj_g_descriptor*, object_descriptors), uint frame_id,
+                    float4 c_pos, float4 c_rot, float4 c_pos_old, float4 c_rot_old, float strength, float camera_contribution)
+{
+    int x = get_global_id(0);
+    int y = get_global_id(1);
+
+    if(x >= SCREENWIDTH || y >= SCREENHEIGHT)
+        return;
+
+    sampler_t sam = CLK_NORMALIZED_COORDS_FALSE |
+                    CLK_ADDRESS_NONE            |
+                    CLK_FILTER_NEAREST;
+
+    sampler_t sam_screen =  CLK_NORMALIZED_COORDS_FALSE |
+                            CLK_ADDRESS_NONE            |
+                            CLK_FILTER_LINEAR;
+
+    uint4 id_val4 = read_imageui(id_buffer, sam, (int2){x, y});
+
+    int o_id = fragment_id_buffer[id_val4.x * FRAGMENT_ID_MUL + 5];
+
+    __global struct obj_g_descriptor *G = &object_descriptors[o_id];
+
+    uint dbuf_val = depth_buffer[y*SCREENWIDTH + x];
+
+    if(dbuf_val == mulint)
+    {
+        write_imagef(back_screen, (int2){x, y}, 0.f);
+        return;
+    }
+
+    float ldepth = idcalc((float)dbuf_val/mulint);
+
+    float actual_depth = ldepth;
+
+    ///unprojected pixel coordinate
+    float3 local_position = {((x - SCREENWIDTH/2.0f)*actual_depth/FOV_CONST), ((y - SCREENHEIGHT/2.0f)*actual_depth/FOV_CONST), actual_depth};
+
+    ///backrotate pixel coordinate into globalspace
+    float3 global_position = back_rot(local_position, 0, c_rot.xyz);
+
+    global_position += c_pos.xyz;
+
+    ///this is scaled, so we don't have to unscale this as p123 are scaled as well
+    float3 object_local = global_position - G->world_pos.xyz;
+    object_local = back_rot_quat(object_local, G->world_rot_quat);
+
+    ///update next iteration, retrieve current iteration old worldpos/quat
+    ///for motionblur
+    float3 old_world_pos;
+    float4 old_world_quat;
+
+    if((frame_id & 1) == 0)
+    {
+        old_world_pos = G->old_world_pos_1.xyz;
+        old_world_quat = G->old_world_rot_quat_1;
+
+        G->old_world_pos_2.xyz = G->world_pos.xyz;
+        G->old_world_rot_quat_2 = G->world_rot_quat;
+    }
+    else
+    {
+        old_world_pos = G->old_world_pos_2.xyz;
+        old_world_quat = G->old_world_rot_quat_2;
+
+        G->old_world_pos_1.xyz = G->world_pos.xyz;
+        G->old_world_rot_quat_1 = G->world_rot_quat;
+    }
+
+    float3 last_frame_pos = rot_quat(object_local, old_world_quat);
+    last_frame_pos += old_world_pos;
+
+    float3 last_frame_no_camera = rot(last_frame_pos, c_pos.xyz, c_rot.xyz);
+    last_frame_pos = rot(last_frame_pos, c_pos_old.xyz, c_rot_old.xyz);
+
+    last_frame_no_camera = depth_project_singular(last_frame_no_camera, SCREENWIDTH, SCREENHEIGHT, FOV_CONST);
+    last_frame_pos = depth_project_singular(last_frame_pos, SCREENWIDTH, SCREENHEIGHT, FOV_CONST);
+
+
+    if(last_frame_pos.z < depth_icutoff)
+    {
+        write_imagef(back_screen, (int2){x, y}, read_imagef(in_screen, sam_screen, (float2){x, y} + 0.5f));
+        return;
+    }
+
+    float2 last_screen_pos = last_frame_pos.xy;
+    float2 last_screen_nocamera = last_frame_no_camera.xy;
+    float2 current_screen_pos = (float2){x, y};
+
+    float2 to_me_vector = current_screen_pos - last_screen_pos;
+    float2 to_me_nocamera = current_screen_pos - last_screen_nocamera;
+
+    //if(fast_length(to_me_nocamera) < fast_length(to_me_vector))
+    //    to_me_vector = to_me_nocamera;
+
+    to_me_vector = camera_contribution * to_me_vector + (1.f - camera_contribution) * to_me_nocamera;
+
+    to_me_vector *= strength;
+
+    int n = max(fabs(to_me_vector.x), fabs(to_me_vector.y)) + 1;
+
+    int bound = 50;
+
+    if(n > bound && n != 0)
+    {
+        to_me_vector /= n;
+        to_me_vector *= bound;
+
+        n = bound;
+    }
+
+    float2 diff = 0;
+
+    if(n != 0)
+        diff = to_me_vector / n;
+
+    float2 current = current_screen_pos - to_me_vector/2.f;
+
+    float4 accum = 0.f;
+    float fcount = 0;
+
+    for(int i=0; i<n; i++, current += diff)
+    {
+        if(current.x < 0 || current.x >= SCREENWIDTH || current.y < 0 || current.y >= SCREENHEIGHT)
+            continue;
+
+        /*float w = (float)i/n;
+        w -= 0.5f;
+        w *= 2;
+        w = fabs(w);*/
+
+        float w = 1;
+
+        float4 col = read_imagef(in_screen, sam_screen, current + 0.5f);
+        accum += col * w;
+        fcount += w;
+    }
+
+    if(fcount != 0)
+        accum /= fcount;
+
+    write_imagef(back_screen, (int2){x, y}, accum);
 }
 
 ///use atomics to be able to reproject forwards, not backwards

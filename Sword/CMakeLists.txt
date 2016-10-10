@@ -6,8 +6,10 @@ set(Sword_VERSION_MINOR 0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
+set(SWORD_EXTERNAL_PROJECTS_PATH "${PROJECT_SOURCE_DIR}/../lib")
+
 add_compile_options(-std=gnu++14 -Wno-c++11-narrowing -fexceptions -DCL_USE_DEPRECATED_OPENCL_1_1_APIS)
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cmake_modules" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/cmake_modules" ${CMAKE_MODULE_PATH})
 
 find_package(OpenGL)
 find_package(OpenCL)
@@ -52,65 +54,65 @@ set(SWORD_HEADERS
 		${PROJECT_SOURCE_DIR}/util.hpp)
 
 set(RENDERER_SOURCES
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/Galaxy/galaxy.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/space_manager.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cl_gl_interop_texture.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/clstate.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/controls.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/engine.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/goo.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/hologram.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/interact_manager.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/light.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/logging.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/network.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_info_struct.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_load.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/object.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/object_context.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/objects_container.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/ocl.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/point_cloud.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/projectile_buffer_gen.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/settings_loader.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/text_handler.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/texture.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/texture_context.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/triangle.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/ui_manager.cpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/vertex.cpp)
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/Galaxy/galaxy.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/space_manager.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/cl_gl_interop_texture.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/clstate.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/controls.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/engine.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/goo.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/hologram.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/interact_manager.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/light.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/logging.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/network.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/obj_info_struct.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/obj_load.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/object.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/object_context.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/objects_container.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/ocl.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/point_cloud.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/projectile_buffer_gen.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/settings_loader.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/text_handler.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/texture.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/texture_context.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/triangle.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/ui_manager.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/vertex.cpp)
 
 set(RENDERER_HEADERS
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/Galaxy/galaxy.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/Game/space_manager.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cl_gl_interop_texture.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/clstate.h
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/controls.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/engine.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/goo.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/hologram.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/interact_manager.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/light.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/logging.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/network.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_g_descriptor.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_info_struct.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/obj_load.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/object.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/object_context.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/objects_container.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/ocl.h
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/point_cloud.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/proj.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/projectile_buffer_gen.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/settings_loader.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/text_handler.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/texture.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/texture_context.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/triangle.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/ui_manager.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/vec.hpp
-		${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/vertex.hpp)
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/Galaxy/galaxy.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/space_manager.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/cl_gl_interop_texture.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/clstate.h
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/controls.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/engine.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/goo.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/hologram.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/interact_manager.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/light.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/logging.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/network.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/obj_g_descriptor.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/obj_info_struct.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/obj_load.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/object.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/object_context.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/objects_container.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/ocl.h
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/point_cloud.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/proj.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/projectile_buffer_gen.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/settings_loader.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/text_handler.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/texture.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/texture_context.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/triangle.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/ui_manager.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/vec.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/vertex.hpp)
 
 set(SERVER_SOURCES
 		${PROJECT_SOURCE_DIR}/../sword_server/game_server/game_modes.cpp
@@ -123,20 +125,20 @@ set(SERVER_HEADERS
 		${PROJECT_SOURCE_DIR}/../sword_server/teaminfo_shared.hpp)
 
 set(IMGUI_SOURCES
-		${PROJECT_SOURCE_DIR}/../../libraries/imgui/imgui.cpp
-		${PROJECT_SOURCE_DIR}/../../libraries/imgui/imgui_draw.cpp
-		${PROJECT_SOURCE_DIR}/../../libraries/imgui-sfml/imgui-SFML.cpp)
+		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui/imgui.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui/imgui_draw.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui-sfml/imgui-SFML.cpp)
 
 set(IMGUI_HEADERS
-		${PROJECT_SOURCE_DIR}/../../libraries/imgui/imgui.h
-		${PROJECT_SOURCE_DIR}/../../libraries/imgui-sfml/imgui-SFML.h)
+		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui/imgui.h
+		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui-sfml/imgui-SFML.h)
 
 include_directories(
 		${PROJECT_SOURCE_DIR}/
-		${PROJECT_SOURCE_DIR}/../../libraries/
-		${PROJECT_SOURCE_DIR}/../../libraries/imgui
-		${PROJECT_SOURCE_DIR}/../../libraries/imgui-sfml
-		${PROJECT_SOURCE_DIR}/../../libraries/compute/include
+		${SWORD_EXTERNAL_PROJECTS_PATH}
+		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui
+		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui-sfml
+		${SWORD_EXTERNAL_PROJECTS_PATH}/compute/include
 )
 
 add_executable(${PROJECT_NAME} ${SWORD_SOURCES} ${SWORD_HEADERS} ${SERVER_SOURCES} ${SERVER_HEADERS} ${RENDERER_SOURCES} ${RENDERER_HEADERS} ${IMGUI_SOURCES} ${IMGUI_HEADERS})
@@ -148,4 +150,4 @@ target_link_libraries(
 		${CMAKE_THREAD_LIBS_INIT}
 		${SFML_LIBRARIES})
 
-file(COPY ${PROJECT_SOURCE_DIR}/../../OpenCLRenderer/cl2.cl DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+file(COPY ${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/cl2.cl DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

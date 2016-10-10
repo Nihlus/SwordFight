@@ -1,93 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/Game/Galaxy/galaxy.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/Game/Galaxy/galaxy.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/Game/space_manager.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/Game/space_manager.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/cl_gl_interop_texture.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/cl_gl_interop_texture.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/clstate.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/clstate.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/controls.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/controls.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/engine.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/engine.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/goo.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/goo.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/hologram.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/hologram.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/interact_manager.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/interact_manager.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/light.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/light.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/logging.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/logging.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/network.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/network.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/obj_info_struct.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/obj_info_struct.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/obj_load.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/obj_load.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/object.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/object.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/object_context.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/object_context.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/objects_container.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/objects_container.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/ocl.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/ocl.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/point_cloud.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/point_cloud.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/projectile_buffer_gen.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/projectile_buffer_gen.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/settings_loader.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/settings_loader.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/text_handler.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/text_handler.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/texture.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/texture.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/texture_context.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/texture_context.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/triangle.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/triangle.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/ui_manager.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/ui_manager.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../OpenCLRenderer/vertex.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../OpenCLRenderer/vertex.cpp" isTestSource="false" />
-    </content>
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/object_cube.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/map_tools.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/colour_defines.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/game_state_manager.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/particle_effect.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/util.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/object_cube.hpp" isTestSource="false" />
@@ -96,9 +14,10 @@
       <sourceFolder url="file://$MODULE_DIR$/server_networking.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ui_manager.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/text.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/fighter.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/music.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/text.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/physics.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server_networking.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cape.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/fighter.hpp" isTestSource="false" />
@@ -109,13 +28,103 @@
       <sourceFolder url="file://$MODULE_DIR$/cape.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sound.hpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/map_tools.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/network_fighter_model.hpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/map_tools.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/menu.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bbox.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/text.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/game_state_manager.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/physics.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/Galaxy/galaxy.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/Galaxy/galaxy.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/space_manager.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/space_manager.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/cl_gl_interop_texture.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/cl_gl_interop_texture.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/clstate.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/clstate.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/controls.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/controls.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/engine.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/engine.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/goo.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/goo.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/hologram.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/hologram.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/interact_manager.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/interact_manager.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/light.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/light.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/logging.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/logging.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/network.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/network.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/obj_info_struct.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/obj_info_struct.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/obj_load.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/obj_load.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/object.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/object.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/object_context.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/object_context.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/objects_container.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/objects_container.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/ocl.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/ocl.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/point_cloud.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/point_cloud.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/projectile_buffer_gen.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/projectile_buffer_gen.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/settings_loader.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/settings_loader.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/text_handler.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/text_handler.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/texture.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/texture.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/texture_context.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/texture_context.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/triangle.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/triangle.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/ui_manager.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/ui_manager.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/vertex.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/vertex.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/imgui-sfml/imgui-SFML.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/imgui-sfml/imgui-SFML.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/imgui/imgui.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/imgui/imgui.cpp" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../lib/imgui/imgui_draw.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/imgui/imgui_draw.cpp" isTestSource="false" />
     </content>
     <content url="file://$MODULE_DIR$/../sword_server/game_server/game_modes.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../sword_server/game_server/game_modes.cpp" isTestSource="false" />
@@ -126,34 +135,52 @@
     <content url="file://$MODULE_DIR$/../sword_server/teaminfo_shared.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../sword_server/teaminfo_shared.cpp" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../libraries/imgui-sfml/imgui-SFML.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../libraries/imgui-sfml/imgui-SFML.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../libraries/imgui/imgui.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../libraries/imgui/imgui.cpp" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../libraries/imgui/imgui_draw.cpp">
-      <sourceFolder url="file://$MODULE_DIR$/../../libraries/imgui/imgui_draw.cpp" isTestSource="false" />
-    </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
-          <root url="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5.4.0/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file://$MODULE_DIR$/../../libraries" />
+          <root url="file://$MODULE_DIR$/../lib" />
         </CLASSES>
         <SOURCES>
-          <root url="file:///usr/lib/llvm-3.8/lib/clang/3.8.0/include" />
+          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5.4.0/include" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
-          <root url="file://$MODULE_DIR$/../../libraries" />
+          <root url="file://$MODULE_DIR$/../lib" />
         </SOURCES>
         <excluded>
-          <root url="file://$MODULE_DIR$/../../libraries/imgui-sfml/imgui-SFML.cpp" />
-          <root url="file://$MODULE_DIR$/../../libraries/imgui/imgui_draw.cpp" />
-          <root url="file://$MODULE_DIR$/../../libraries/imgui/imgui.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/objects_container.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/space_manager.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/Galaxy/galaxy.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/network.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/texture.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/settings_loader.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/goo.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/ui_manager.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/object_context.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/engine.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/obj_info_struct.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/texture_context.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/hologram.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/ocl.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/object.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/clstate.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/logging.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/triangle.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/vertex.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/point_cloud.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/obj_load.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/light.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/interact_manager.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/controls.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/cl_gl_interop_texture.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/projectile_buffer_gen.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/text_handler.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/imgui-sfml/imgui-SFML.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/imgui/imgui_draw.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/imgui/imgui.cpp" />
         </excluded>
       </library>
     </orderEntry>

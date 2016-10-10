@@ -1,0 +1,24 @@
+[submodule "lib/OpenCLRenderer"]
+	path = lib/OpenCLRenderer
+	url = git@github.com:Nihlus/OpenCLRenderer.git
+[submodule "lib/sword_gameserver"]
+	path = lib/sword_gameserver
+	url = git@github.com:Nihlus/sword_gameserver.git
+[submodule "lib/sword_masterserver"]
+	path = lib/sword_masterserver
+	url = https://github.com/Nihlus/sword_masterserver
+[submodule "lib/net"]
+	path = lib/net
+	url = git@github.com:Nihlus/crappynetworking.git
+[submodule "lib/imgui"]
+	path = lib/imgui
+	url = https://github.com/ocornut/imgui.git
+[submodule "lib/imgui-sfml"]
+	path = lib/imgui-sfml
+	url = https://github.com/eliasdaler/imgui-sfml.git
+[submodule "lib/compute"]
+	path = lib/compute
+	url = https://github.com/boostorg/compute.git
+[submodule "lib/vec"]
+	path = lib/vec
+	url = git@github.com:Nihlus/funvectormaths.git
