@@ -58,6 +58,7 @@ set(SWORD_HEADERS
 set(RENDERER_SOURCES
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/Galaxy/galaxy.cpp
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/space_manager.cpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/camera_effects.cpp
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/cl_gl_interop_texture.cpp
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/clstate.cpp
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/controls.cpp
@@ -87,6 +88,7 @@ set(RENDERER_SOURCES
 set(RENDERER_HEADERS
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/Galaxy/galaxy.hpp
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/Game/space_manager.hpp
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/camera_effects.hpp
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/cl_gl_interop_texture.hpp
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/clstate.h
 		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/controls.hpp
@@ -140,7 +142,8 @@ include_directories(
 		${SWORD_EXTERNAL_PROJECTS_PATH}
 		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui
 		${SWORD_EXTERNAL_PROJECTS_PATH}/imgui-sfml
-		${SWORD_EXTERNAL_PROJECTS_PATH}/compute/include
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/lib/half/include
+		${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/lib/compute/include
 )
 
 add_executable(${PROJECT_NAME} ${SWORD_SOURCES} ${SWORD_HEADERS} ${SERVER_SOURCES} ${SERVER_HEADERS} ${RENDERER_SOURCES} ${RENDERER_HEADERS} ${IMGUI_SOURCES} ${IMGUI_HEADERS})

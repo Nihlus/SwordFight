@@ -44,6 +44,9 @@
     <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/space_manager.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/space_manager.cpp" isTestSource="false" />
     </content>
+    <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/camera_effects.cpp">
+      <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/camera_effects.cpp" isTestSource="false" />
+    </content>
     <content url="file://$MODULE_DIR$/../lib/OpenCLRenderer/cl_gl_interop_texture.cpp">
       <sourceFolder url="file://$MODULE_DIR$/../lib/OpenCLRenderer/cl_gl_interop_texture.cpp" isTestSource="false" />
     </content>
@@ -157,6 +160,7 @@
           <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/space_manager.cpp" />
           <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/Game/Galaxy/galaxy.cpp" />
           <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/network.cpp" />
+          <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/camera_effects.cpp" />
           <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/texture.cpp" />
           <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/settings_loader.cpp" />
           <root url="file://$MODULE_DIR$/../lib/OpenCLRenderer/goo.cpp" />

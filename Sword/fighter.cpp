@@ -595,6 +595,11 @@ void sword::set_rot(vec3f _rot)
     rot = _rot;
 }
 
+void sword::set_active(bool active)
+{
+	is_active = active;
+}
+
 struct joint_link make_link(part* p1, part* p2, int team, float squish = 0.0f, float thickness = 18.f, vec3f offset = {0,0,0})
 {
     vec3f dir = (p2->pos - p1->pos);
