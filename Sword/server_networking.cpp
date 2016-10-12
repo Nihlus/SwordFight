@@ -3,6 +3,9 @@
 #include "sound.hpp"
 #include "network_fighter_model.hpp"
 
+std::vector<delay_information> delay_vectors;
+float delay_ms = 200.f;
+
 std::string respawn_info::get_display_string()
 {
     float remaining = spawn_time - time_elapsed;
@@ -720,7 +723,11 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
                             float my_ping = nfight->net.ping;
                             float their_ping = play.fight->net.ping;
 
+                            #ifndef DELAY_SIMULATE
                             float full_rtt_time = my_ping + their_ping;
+                            #else
+                            float full_rtt_time = my_ping + their_ping + delay_ms*2;
+                            #endif
 
                             delt.delay_time_ms = full_rtt_time;
 
@@ -774,7 +781,8 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
 
                 vec.push_back(canary_end);
 
-                udp_send_to(to_game, vec.ptr, (const sockaddr*)&to_game_store);
+                //udp_send_to(to_game, vec.ptr, (const sockaddr*)&to_game_store);
+                network_update_wrapper(this, vec);
             }
 
             ///uuh. Looking increasingly like we should just include the home fighter in this one, eh?
@@ -951,7 +959,7 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
     {
         if(i.first == my_id)
         {
-            if(i.second.id >= 0)
+            if(i.second.id >= 0 && i.second.fight)
                 i.second.fight->save_network_representation(*i.second.net_fighter);
 
             continue;
@@ -1006,7 +1014,8 @@ void server_networking::tick(object_context* ctx, object_context* tctx, gameplay
         ///probably due to the order of applying network models
         ///so at this point, this fighter has had its net_fighter_copy thing updated with recoil request
         ///if clientside parry
-        i.second.fight->check_clientside_parry(discovered_fighters[my_id].fight);
+        if(have_id && discovered_fighters[my_id].fight)
+            i.second.fight->check_clientside_parry(discovered_fighters[my_id].fight);
 
         i.second.fight->network_update_render_positions();
 

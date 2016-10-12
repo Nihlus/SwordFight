@@ -93,6 +93,7 @@ void physics::add_objects_container(part* _p, fighter* _parent)
 ///this entire method seems like a hacky bunch of shite
 ///REMEMBER, DEAD OBJECTS ARE STILL CHECKED AGAINST. This is bad for performance (although who cares), but moreover its producing BUGS
 ///FIXME
+///If we are detecting that the local client is hit, we need to apply delayed deltas
 int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, bool is_player, bool do_audiovisuals, fighter* optional_only_hit)
 {
     if(my_parent->num_dead() >= my_parent->num_needed_to_die())
@@ -247,6 +248,8 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                 ///recoil. Sword collides is only called for attacks that damage, so therefore this is fine
                 ///blocking recoil IS handled over the network currently
 
+                //can_block = true;
+
                 ///need to differentiate between forced recoil, and optional staggering recoil for windups
                 if((m1.does(mov::BLOCKING) || m2.does(mov::BLOCKING) || them->net.is_blocking) && can_block)
                 {
@@ -290,6 +293,8 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                     ///their client needs to be updated to make a clang noise
                     ///as they do not know (as we aren't simulating state on every client)
 
+                    ///Ok, the clang audio is always correct. If we simulate that they've blocked on our client
+                    ///we've definitely clanged
                     if(do_audiovisuals)
                     {
                         them->local.play_clang_audio = 1;
@@ -326,6 +331,8 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
                     their_net.network_fighter_inf.recoil_requested.set_local_val(1);
                     their_net.network_fighter_inf.recoil_requested.network_local();
 
+                    ///ok, if this arrives before the other client can block it on their client
+                    ///it will not work
                     them->net.is_damaging = 0;
                     ///not host authoratitive, but will stop the clientside detection from crapping out
                     ///if we hit their hand the same tick - latency and misdetecting a hit
@@ -342,6 +349,9 @@ int physics::sword_collides(sword& w, fighter* my_parent, vec3f sword_move_dir, 
 
 
                     ///recoil request gets set in ::damage
+                    ///hit audio is possibly correct, if it turns out due to the clientside parry system that they were *not* hit
+                    ///we'll play hit -> clang, which is not what we want
+                    ///instead, lets confirm on the hit clients game whether or not to play a hit noise, or a clang noise
                     them->parts[type].local.play_hit_audio = 1;
                     them->parts[type].local.send_hit_audio = 1;
                 }

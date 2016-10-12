@@ -2751,7 +2751,27 @@ void fighter::update_last_hit_id()
 ///check if this fighter has hit the non networked fighter
 void fighter::check_clientside_parry(fighter* non_networked_fighter)
 {
-    if(net.is_damaging)
+    ///this needs to be a more complex check if the non networked fighter has any pending hits from this client
+    ///but its still crap, we might miss a frame or two in the interim if some of the packets are jittered
+    //if(net.is_damaging)
+
+    bool any_pending_hits = net.is_damaging;
+
+    for(auto& p : non_networked_fighter->parts)
+    {
+        for(delayed_delta& d : p.net.delayed_delt)
+        {
+            if(d.delayed_info.id_hit_by == this->network_id)
+            {
+                any_pending_hits = true;
+
+                lg::log("Pending!");
+            }
+        }
+    }
+
+    ///ok, so if we've got a pending hit, we need to override the block config
+    if(any_pending_hits)
     {
         //printf("we're damaging network\n");
 
@@ -2770,19 +2790,81 @@ void fighter::check_clientside_parry(fighter* non_networked_fighter)
         ///but this can be up to 400ms, which is unfortunate
         ///so how to handle overriding the damage? wait for the attacker to confirm? on the client? delay the damage for a fixed amount and negotiate
         ///????????
+        ///if the hit ID == bodypart id hit in pending hits up above, then we've definitely been hit
+        ///unless we've got a clientside parry FIRST
+        ///add this as a tag in the delayed delta, so we can delayed_delta.is_definitely_hit = 1; then override
         if(hit_id == -2)
         {
-            lg::log("clientside parry");
-
-            local.play_clang_audio = 1;
-            local.send_clang_audio = 1;
-
-            clientside_parry_info inf;
-            inf.player_id_i_parried = this->network_id;
-
-            non_networked_fighter->clientside_parry_inf.push_back(inf);
 
             ///fighter* their_parent = phys->bodies[i.hit_id].parent
+
+            ///int bodypart_id = (bodypart_t)(i.hit_id % COUNT)
+
+            bool success = false;
+
+            for(auto& p : non_networked_fighter->parts)
+            {
+                for(auto& d : p.net.delayed_delt)
+                {
+                    if(d.delayed_info.id_hit_by == network_id)
+                    {
+                        if(d.part_hit_before_block)
+                            continue;
+
+                        ///no need to go on about it
+                        ///ensure we don't generate multiple clientside parries
+                        ///for one delayed delta+
+                        if(d.part_blocked)
+                            continue;
+
+                        d.part_blocked = true;
+
+                        success = true;
+                    }
+                }
+            }
+
+            if(success)
+            {
+                lg::log("clientside parry");
+
+                local.play_clang_audio = 1;
+                local.send_clang_audio = 1;
+
+                clientside_parry_info inf;
+                inf.player_id_i_parried = this->network_id;
+
+                non_networked_fighter->clientside_parry_inf.push_back(inf);
+            }
+            else
+            {
+                lg::log("We've detected a hit already, too late");
+            }
+       }
+
+        //int bodypart_id = hit_id % COUNT;
+
+        if(hit_id >= 0)
+        {
+            //for(auto& p : non_networked_fighter->parts)
+            for(int ii = 0; ii < non_networked_fighter->parts.size(); ii++)
+            {
+                ///we don't care WHICH part is hit, just that the local client detected a block
+                part& p = non_networked_fighter->parts[ii];
+
+                for(int kk=0; kk < p.net.delayed_delt.size(); kk++)
+                {
+                    delayed_delta& d = p.net.delayed_delt[kk];
+
+                    if(d.delayed_info.id_hit_by == network_id)
+                    {
+                        if(d.part_blocked)
+                            continue;
+
+                        d.part_hit_before_block = true;
+                    }
+                }
+            }
         }
     }
 }
@@ -2826,6 +2908,10 @@ void fighter::process_delayed_deltas()
                     }
                 }
 
+                ///ok, so I'm pretty sure this only gets called once, on the hit client
+                ///so flinch should simply set the broadcast sound noise, not clientside parry!
+                ///play sounds here, as this is the ultimate arbiter of what happened?
+                ///except for an agreed block!
                 if(apply_damage)
                 {
                     local_part.hp += delt.delayed_info.hp_delta;
