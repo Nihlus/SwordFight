@@ -56,7 +56,7 @@ void text::draw(sf::RenderTarget* draw_to)
 {
     if(!loaded)
     {
-        font.loadFromFile("Res/VeraMono.ttf");
+        font.loadFromFile("res/VeraMono.ttf");
         loaded = 1;
     }
 
@@ -101,7 +101,7 @@ void text::immediate(sf::RenderTarget* draw_to, const std::string& cur, vec2f po
 {
     if(!loaded)
     {
-        font.loadFromFile("Res/VeraMono.ttf");
+        font.loadFromFile("res/VeraMono.ttf");
         loaded = 1;
     }
 

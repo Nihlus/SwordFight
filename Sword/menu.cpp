@@ -15,7 +15,7 @@ void start_game(menu_system& menu)
 
 menu_system::menu_system()
 {
-    font.loadFromFile("Res/VeraMono.ttf");
+    font.loadFromFile("res/VeraMono.ttf");
 
     ui_box start;
     start.pos = {0.5f, 0.5f};

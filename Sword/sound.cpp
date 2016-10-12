@@ -39,19 +39,19 @@ void sound::add(int type, vec3f pos, bool relative, bool random)
     {
         s.resize(11);
 
-        s[0].loadFromFile("Res/hitm.wav");
-        s[1].loadFromFile("Res/clangm.wav");
+        s[0].loadFromFile("res/hitm.wav");
+        s[1].loadFromFile("res/clangm.wav");
 
-        s[2].loadFromFile("Res/footsteps/asphalt/1.wav");
-        s[3].loadFromFile("Res/footsteps/asphalt/2.wav");
-        s[4].loadFromFile("Res/footsteps/asphalt/3.wav");
-        s[5].loadFromFile("Res/footsteps/asphalt/4.wav");
-        s[6].loadFromFile("Res/footsteps/asphalt/5.wav");
-        s[7].loadFromFile("Res/footsteps/asphalt/6.wav");
-        s[8].loadFromFile("Res/footsteps/asphalt/7.wav");
-        s[9].loadFromFile("Res/footsteps/asphalt/8.wav");
+        s[2].loadFromFile("res/footsteps/asphalt/1.wav");
+        s[3].loadFromFile("res/footsteps/asphalt/2.wav");
+        s[4].loadFromFile("res/footsteps/asphalt/3.wav");
+        s[5].loadFromFile("res/footsteps/asphalt/4.wav");
+        s[6].loadFromFile("res/footsteps/asphalt/5.wav");
+        s[7].loadFromFile("res/footsteps/asphalt/6.wav");
+        s[8].loadFromFile("res/footsteps/asphalt/7.wav");
+        s[9].loadFromFile("res/footsteps/asphalt/8.wav");
 
-        s[10].loadFromFile("Res/emphasis.wav");
+        s[10].loadFromFile("res/emphasis.wav");
 
         extra_start = s.size();
 

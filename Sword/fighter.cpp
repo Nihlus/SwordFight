@@ -3395,7 +3395,7 @@ void fighter::set_secondary_context(object_context* _transparency_context)
     ///destroy name_tex_gpu
 
     name_tex_gpu = _transparency_context->tex_ctx.make_new();
-    name_tex_gpu->set_location("Res/128x128.png");
+    name_tex_gpu->set_location("res/128x128.png");
 
     name_container = transparency_context->make_new();
     name_container->set_load_func(std::bind(obj_rect, std::placeholders::_1, *name_tex_gpu, name_obj_dim));
