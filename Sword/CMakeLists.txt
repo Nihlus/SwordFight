@@ -8,7 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 set(SWORD_EXTERNAL_PROJECTS_PATH "${PROJECT_SOURCE_DIR}/../lib")
 
-add_compile_options(-std=gnu++14 -Wno-c++11-narrowing -fexceptions -DCL_USE_DEPRECATED_OPENCL_1_1_APIS)
+add_compile_options(-std=gnu++14 -Wno-c++11-narrowing -fexceptions -DCL_USE_DEPRECATED_OPENCL_1_1_APIS -DGL_INTEROP)
 set(CMAKE_MODULE_PATH "${SWORD_EXTERNAL_PROJECTS_PATH}/OpenCLRenderer/cmake_modules" ${CMAKE_MODULE_PATH})
 
 find_package(OpenGL)

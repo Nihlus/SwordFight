@@ -296,8 +296,10 @@ bool sock_set_non_blocking(int sock, int is_non_blocking)
 inline
 bool sock_readable(tcp_sock& sock)
 {
-    //if(!sock.valid())
-    //    return false;
+    if(!sock.valid())
+    {
+	    return false;
+    }
 
     fd_set fds;
     struct timeval tmo;
@@ -318,8 +320,10 @@ bool sock_readable(tcp_sock& sock)
 inline
 bool sock_writable(tcp_sock& sock, long seconds = 0, long milliseconds = 0)
 {
-    //if(!sock.valid())
-    //    return false;
+    if(!sock.valid())
+    {
+	    return false;
+    }
 
     fd_set fds;
     struct timeval tmo;
