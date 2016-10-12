@@ -36,23 +36,17 @@
 
 #include "menu.hpp"
 
-//#include "version.h"
-
 #include "util.hpp"
-#include "../OpenCLRenderer/logging.hpp"
-
+#include "OpenCLRenderer/logging.hpp"
 #include <fstream>
-
-#ifdef MYO
-#include <my_myo/my_myo.hpp>
-#endif
-
 #include "imgui/imgui.h"
 #include "imgui-sfml/imgui-SFML.h"
-
 #include "ui_manager.hpp"
 #include "trombone_manager.hpp"
 #include "OpenCLRenderer/camera_effects.hpp"
+#ifdef MYO
+#include <my_myo/my_myo.hpp>
+#endif
 
 ///none of these affect the camera, so engine does not care about them
 ///assume main is blocking

@@ -1,7 +1,7 @@
 #include "trombone_manager.hpp"
 #include <SFML/Graphics.hpp>
 #include "util.hpp"
-#include "../openclrenderer/engine.hpp"
+#include "OpenCLRenderer/engine.hpp"
 #include <vec/vec.hpp>
 #include "sound.hpp"
 #include "fighter.hpp"
@@ -69,14 +69,14 @@ void trombone_manager::tick(engine& window, fighter* my_fight)
 
     tone = clamp(tone, 0, max_tones-1);
 
-    trombone->set_pos(conv_implicit<cl_float4>(my_fight->parts[bodypart::LHAND].global_pos));
+    trombone->set_pos(conv_implicit<cl_float4>(my_fight->parts[bodyparts::LHAND].global_pos));
 
     vec3f up = {0, 1, 0};
-    vec3f forw = my_fight->parts[bodypart::LHAND].global_pos - (my_fight->parts[bodypart::HEAD].global_pos - (vec3f){0, 50, 0});
+    vec3f forw = my_fight->parts[bodyparts::LHAND].global_pos - (my_fight->parts[bodyparts::HEAD].global_pos - (vec3f){0, 50, 0});
 
     vec3f rcross = cross(forw, up).norm() * 50;
 
-    forw = my_fight->parts[bodypart::LHAND].global_pos - (my_fight->parts[bodypart::HEAD].global_pos - (vec3f){0, 50, 0} - rcross);
+    forw = my_fight->parts[bodyparts::LHAND].global_pos - (my_fight->parts[bodyparts::HEAD].global_pos - (vec3f){0, 50, 0} - rcross);
 
     quaternion nq = look_at_quat(forw, up);
 
@@ -87,7 +87,7 @@ void trombone_manager::tick(engine& window, fighter* my_fight)
 
     float tone_dist = 3.5f;
 
-    vec3f front_slider = my_fight->parts[bodypart::LHAND].global_pos;
+    vec3f front_slider = my_fight->parts[bodyparts::LHAND].global_pos;
 
     mat3f r = trombone->rot_quat.get_rotation_matrix();
 
@@ -101,7 +101,7 @@ void trombone_manager::tick(engine& window, fighter* my_fight)
 
 void trombone_manager::play(fighter* my_fight)
 {
-    sound::add(11 + tone, my_fight->parts[bodypart::BODY].global_pos, true, false);
+    sound::add(11 + tone, my_fight->parts[bodyparts::BODY].global_pos, true, false);
 }
 
 void trombone_manager::set_active(bool active)
