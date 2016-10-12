@@ -14,7 +14,7 @@ void trombone_manager::init(object_context* _ctx)
     std::string duration = "05";
     //std::string octave = "3";
     int octave = 3;
-    std::string dir = "./Res/trombone/";
+    std::string dir = "./res/trombone/";
 
     ///define a max_tones, auto octave scale
     std::string tones[max_tones] =
@@ -48,7 +48,7 @@ void trombone_manager::init(object_context* _ctx)
 
     trombone = ctx->make_new();
     trombone->set_active(true);
-    trombone->set_file("./Res/trombone_cutdown_nomod.obj");
+    trombone->set_file("./res/trombone_cutdown_nomod.obj");
     trombone->cache = false;
 
     ctx->load_active();

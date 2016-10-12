@@ -88,7 +88,7 @@ void load_map(objects_container* obj, const std::vector<int>& map_def, int width
             objects_container temp_obj;
             temp_obj.parent = obj->parent;
 
-            load_object_cube(&temp_obj, world_pos_start, world_pos_end, game_map::scale/2, "./Res/gray.png");
+            load_object_cube(&temp_obj, world_pos_start, world_pos_end, game_map::scale/2, "./res/gray.png");
 
             ///subobject position set by obj->set_pos in load_object_cube
             obj->objs.push_back(temp_obj.objs[0]);
